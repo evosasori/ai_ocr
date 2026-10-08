@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_sale_order_ai_preview_wizard_form" model="ir.ui.view">
+            <field name="name">sale.order.ai.preview.wizard.form</field>
+            <field name="model">sale.order.ai.preview.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Preview &amp; Verifikasi PO Pelanggan">
+                    <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center justify-content-between">
+                        <div>
+                            <strong>🔍 Preview Ekstraksi PO Pelanggan (Customer Purchase Order)</strong><br/>
+                            <span>Silakan tinjau data pelanggan, nomor PO, tanggal, dan rincian produk sebelum dimasukkan ke Sales Order.</span>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Identitas Pelanggan &amp; PO">
+                            <field name="partner_name_raw"/>
+                            <field name="partner_id" options="{'no_create_edit': False}"/>
+                            <field name="client_order_ref"/>
+                        </group>
+                        <group string="Tanggal &amp; Finansial">
+                            <field name="date_order"/>
+                            <field name="commitment_date"/>
+                            <field name="currency_id" options="{'no_create': True}"/>
+                            <field name="detected_total" class="fw-bold fs-5 text-primary"/>
+                            <field name="detected_subtotal" invisible="1"/>
+                            <field name="detected_tax" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Rincian Item Pesanan (Lines)" name="lines_page">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="description"/>
+                                    <field name="product_id" options="{'no_create_edit': False}"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" optional="show"/>
+                                    <field name="price_subtotal" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Hasil Mentah OCR &amp; JSON" name="raw_json_page">
+                            <div class="text-muted small mb-2">
+                                <span>Salin JSON mentah jika diperlukan:</span>
+                            </div>
+                            <field name="raw_json_text" readonly="1" class="font-monospace" style="font-size: 11px; height: 300px;"/>
+                        </page>
+                    </notebook>
+
+                    <footer>
+                        <button name="action_apply_to_sale_order" type="object" string="✅ Terapkan ke Sales Order" class="btn btn-primary" default_focus="1"/>
+                        <button string="Batal" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

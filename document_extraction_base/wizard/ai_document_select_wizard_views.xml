@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ai_document_select_wizard_form" model="ir.ui.view">
+        <field name="name">ai.document.select.wizard.form</field>
+        <field name="model">ai.document.select.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Pilih Dokumen untuk Ekstraksi AI">
+                <field name="res_model" invisible="1"/>
+                <field name="res_id" invisible="1"/>
+                <field name="available_attachment_ids" invisible="1"/>
+
+                <div class="alert alert-primary d-flex align-items-center mb-3">
+                    <i class="fa fa-files-o fa-2x me-3 text-primary"/>
+                    <div>
+                        <strong class="d-block mb-1">Terdeteksi Lebih Dari 1 Lampiran Dokumen:</strong>
+                        <span>Tentukan apakah Anda ingin mengekstrak satu dokumen spesifik atau menggabungkan beberapa file (misalnya dokumen terpisah / halaman lanjutan) menjadi satu transaksi.</span>
+                    </div>
+                </div>
+
+                <group>
+                    <field name="mode" widget="radio"/>
+                </group>
+
+                <!-- Single Mode -->
+                <group invisible="mode != 'single'" string="Pilih Dokumen Utama">
+                    <field name="selected_attachment_id" 
+                           options="{'no_create': True, 'no_open': True}" 
+                           domain="[('id', 'in', available_attachment_ids)]"
+                           required="mode == 'single'"/>
+                </group>
+
+                <div class="alert alert-secondary py-2 px-3 small" invisible="mode != 'single'">
+                    <i class="fa fa-check-circle me-1 text-success"/>
+                    <span>Mode Dokumen Tunggal hanya menggunakan <b>1 limit kuota</b>.</span>
+                </div>
+
+                <!-- Merge Mode -->
+                <group invisible="mode != 'merge'" string="Pilih Dokumen yang Ingin Digabungkan">
+                    <field name="selected_attachment_ids" 
+                           widget="many2many_checkboxes" 
+                           domain="[('id', 'in', available_attachment_ids)]"
+                           required="mode == 'merge'"/>
+                </group>
+
+                <!-- Quota Alert Banner when Merging -->
+                <div class="alert alert-warning py-3 px-3 mt-3 d-flex align-items-start" invisible="mode != 'merge'">
+                    <i class="fa fa-exclamation-triangle fa-2x me-3 text-warning"/>
+                    <div>
+                        <strong class="d-block mb-1">⚠️ PERINGATAN PENGGUNAAN KUOTA (MULTI-DOKUMEN):</strong>
+                        <span>
+                            Menggabungkan dokumen akan menggunakan kuota sesuai dengan jumlah dokumen yang dipilih.
+                            Saat ini Anda memilih <b><field name="quota_cost" class="oe_inline"/> dokumen</b>, sehingga 
+                            <b><field name="quota_cost" class="oe_inline"/> limit kuota</b> akan dipotong dari saldo instance Anda saat ekstraksi berjalan.
+                        </span>
+                    </div>
+                </div>
+
+                <footer>
+                    <button name="action_confirm_extract" 
+                            string="⚡ Lanjutkan Ekstraksi AI" 
+                            type="object" 
+                            class="btn-primary"/>
+                    <button string="Batal" 
+                            class="btn-secondary" 
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

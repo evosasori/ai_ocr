@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_account_move_ai_preview_wizard_form" model="ir.ui.view">
+            <field name="name">account.move.ai.preview.wizard.form</field>
+            <field name="model">account.move.ai.preview.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Preview &amp; Verifikasi Ekstraksi AI">
+                    <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center justify-content-between">
+                        <div>
+                            <strong>🔍 Preview Hasil Pembacaan AI Vision</strong><br/>
+                            <span>Silakan tinjau data vendor, tanggal, dan rincian produk sebelum dimasukkan secara resmi ke faktur.</span>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Identitas Vendor &amp; Dokumen">
+                            <field name="partner_name_raw"/>
+                            <field name="partner_id" options="{'no_create_edit': False}"/>
+                            <field name="ref"/>
+                        </group>
+                        <group string="Tanggal &amp; Finansial">
+                            <field name="invoice_date"/>
+                            <field name="invoice_date_due"/>
+                            <field name="currency_id" options="{'no_create': True}"/>
+                            <field name="detected_total" class="fw-bold fs-5 text-primary"/>
+                            <field name="detected_subtotal" invisible="1"/>
+                            <field name="detected_tax" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Rincian Item Produk (Lines)" name="lines_page">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="description"/>
+                                    <field name="product_id" options="{'no_create_edit': False}"/>
+                                    <field name="quantity"/>
+                                    <field name="price_unit"/>
+                                    <field name="discount" optional="show"/>
+                                    <field name="price_subtotal" sum="Total"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Hasil Mentah OCR &amp; JSON" name="raw_json_page">
+                            <div class="text-muted small mb-2">
+                                <span>Salin JSON mentah di bawah ini jika Anda ingin menggunakannya di luar Odoo:</span>
+                            </div>
+                            <field name="raw_json_text" readonly="1" class="font-monospace" style="font-size: 11px; height: 300px;"/>
+                        </page>
+                    </notebook>
+
+                    <footer>
+                        <button name="action_apply_to_bill" type="object" string="✅ Terapkan ke Faktur" class="btn btn-primary" default_focus="1"/>
+                        <button string="Batal" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

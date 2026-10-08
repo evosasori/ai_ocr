@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hr_expense_form_inherit_ai_extract" model="ir.ui.view">
+        <field name="name">hr.expense.form.inherit.ai.extract</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_form"/>
+        <field name="priority" eval="70"/>
+        <field name="arch" type="xml">
+            <!-- Add AI Extract Button in Header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_extract_expense_receipt_ai"
+                        type="object"
+                        string="⚡ Ekstrak Receipt with AI"
+                        class="btn-secondary"
+                        invisible="state not in ('draft', 'reported')"/>
+            </xpath>
+
+            <!-- Add AI Extraction Audit Information inside sheet -->
+            <xpath expr="//sheet" position="inside">
+                <group string="AI Document Extraction Audit" name="ai_extraction_audit" invisible="extraction_status == 'draft'">
+                    <group>
+                        <field name="extraction_status" widget="badge"/>
+                        <field name="ai_model_used"/>
+                        <field name="ai_detected_merchant_name"/>
+                        <field name="ai_detected_category"/>
+                    </group>
+                    <group>
+                        <field name="ai_detected_date"/>
+                        <field name="ai_detected_total"/>
+                        <field name="ai_detected_tax"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

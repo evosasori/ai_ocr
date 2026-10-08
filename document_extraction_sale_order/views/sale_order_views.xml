@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_order_form_inherit_ai_extract" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.ai.extract</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority" eval="70"/>
+            <field name="arch" type="xml">
+                <!-- Add Extract with AI button in header -->
+                <xpath expr="//header" position="inside">
+                    <button name="action_extract_customer_po_ai"
+                            type="object"
+                            string="⚡ Ekstrak PO from Customer"
+                            class="btn-secondary"
+                            invisible="state not in ('draft', 'sent')"/>
+                </xpath>
+
+                <!-- Discrepancy Alert Banner above sheet -->
+                <xpath expr="//sheet" position="before">
+                    <div class="alert alert-warning py-2 px-3 mb-2 small d-flex align-items-center justify-content-between"
+                         invisible="not ai_po_discrepancy or ai_po_discrepancy_dismissed">
+                        <div>
+                            <strong>⚠️ Selisih Nilai PO Terdeteksi:</strong>
+                            <span> Total dokumen fisik PO (<field name="ai_detected_total" widget="monetary" class="oe_inline"/>) berbeda dengan total sistem Odoo (<field name="amount_total" widget="monetary" class="oe_inline"/>). Selisih: <field name="ai_po_discrepancy" widget="monetary" class="oe_inline text-danger fw-bold"/>.</span>
+                        </div>
+                        <button name="action_dismiss_ai_po_discrepancy"
+                                type="object"
+                                string="Tutup Peringatan"
+                                class="btn btn-outline-secondary btn-sm"/>
+                    </div>
+                </xpath>
+
+                <!-- Add AI Extraction metadata fields in Other Info page -->
+                <xpath expr="//page[@name='other_information']" position="inside">
+                    <group string="AI Document Extraction Audit" name="ai_extraction_audit_group">
+                        <group>
+                            <field name="extraction_status" widget="badge"/>
+                            <field name="ai_model_used"/>
+                            <field name="ai_detected_customer_name"/>
+                            <field name="ai_detected_po_number"/>
+                        </group>
+                        <group>
+                            <field name="ai_detected_po_date"/>
+                            <field name="ai_detected_delivery_date"/>
+                            <field name="ai_detected_total"/>
+                            <field name="ai_po_discrepancy" invisible="not ai_po_discrepancy"/>
+                        </group>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

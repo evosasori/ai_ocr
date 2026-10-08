@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_company_form_inherit_ai_extract" model="ir.ui.view">
+            <field name="name">res.company.form.inherit.ai.extract</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="priority" eval="80"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="AI Document Extraction" name="ai_extraction_config">
+                        <group>
+                            <group string="AI Connectivity">
+                                <field name="ai_connection_mode" widget="radio"/>
+                                <field name="gateway_url" placeholder="https://ai-gateway.triadiputra.my.id" invisible="ai_connection_mode != 'cloud'"/>
+                                <field name="custom_ai_endpoint" placeholder="https://api.openai.com/v1" invisible="ai_connection_mode != 'custom'"/>
+                                <field name="custom_ai_api_key" password="True" placeholder="sk-..." invisible="ai_connection_mode != 'custom'"/>
+                                <field name="custom_ai_model" placeholder="gpt-4o-mini" invisible="ai_connection_mode != 'custom'"/>
+                            </group>
+                            <group string="Matching Rules">
+                                <field name="auto_create_partner"/>
+                                <field name="auto_create_product"/>
+                            </group>
+                        </group>
+                        <div class="mt-3 d-flex gap-2">
+                            <button name="action_check_quota_status" type="object" string="⚡ Cek Kuota Cloud Gateway" class="btn btn-secondary" invisible="ai_connection_mode != 'cloud'"/>
+                            <button name="action_open_topup_portal" type="object" string="💳 Buka Portal Top-Up" class="btn btn-success" invisible="ai_connection_mode != 'cloud'"/>
+                            <button name="action_test_ai_connection" type="object" string="⚡ Test Custom AI Connection" class="btn btn-primary" invisible="ai_connection_mode != 'custom'"/>
+                        </div>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
+
