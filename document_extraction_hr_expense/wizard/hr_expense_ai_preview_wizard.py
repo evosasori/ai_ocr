@@ -8,58 +8,58 @@ _logger = logging.getLogger(__name__)
 
 class HrExpenseAiPreviewWizard(models.TransientModel):
     _name = 'hr.expense.ai.preview.wizard'
-    _description = 'Preview Ekstraksi Struk Pengeluaran AI'
+    _description = 'AI Expense Receipt Extraction Preview'
 
     expense_id = fields.Many2one(
         'hr.expense',
-        string='Expense Terkait',
+        string='Related Expense',
         required=True,
         ondelete='cascade'
     )
     merchant_name = fields.Char(
-        string='Nama Merchant / Toko',
-        help='Nama merchant atau tempat pembelian yang terdeteksi pada struk.'
+        string='Merchant / Store Name',
+        help='Merchant or store name detected on the receipt.'
     )
     description = fields.Char(
-        string='Keterangan Pengeluaran',
+        string='Expense Description',
         required=True,
-        help='Deskripsi pengeluaran yang akan dicatat pada record Expense.'
+        help='Description of the expense to be recorded on the Expense record.'
     )
     date = fields.Date(
-        string='Tanggal Transaksi',
+        string='Transaction Date',
         required=True
     )
     currency_id = fields.Many2one(
         'res.currency',
-        string='Mata Uang',
+        string='Currency',
         required=True
     )
     total_amount = fields.Monetary(
-        string='Total Pengeluaran',
+        string='Total Amount',
         currency_field='currency_id',
         required=True,
-        help='Total nominal akhir yang dibayarkan pada struk.'
+        help='Final total amount paid on the receipt.'
     )
     tax_amount = fields.Monetary(
-        string='Pajak (PPN/PB1)',
+        string='Tax Amount',
         currency_field='currency_id',
-        help='Nominal pajak yang tercantum pada struk jika ada.'
+        help='Tax amount listed on the receipt if any.'
     )
     category_suggestion = fields.Char(
-        string='Kategori Estimasi AI',
+        string='AI Suggested Category',
         readonly=True,
-        help='Kategori biaya yang diprediksi oleh AI dari isi struk.'
+        help='Expense category predicted by AI from the receipt content.'
     )
     product_id = fields.Many2one(
         'product.product',
-        string='Kategori / Produk Beban (Opsional)',
+        string='Expense Category / Product (Optional)',
         domain="[('can_be_expensed', '=', True)]",
-        help='Pilih produk beban untuk transaksi ini. Jika dikosongkan, sistem akan otomatis menggunakan Default Expense Product dari Settings.'
+        help='Select an expense product for this transaction. If left empty, the system automatically uses the Default Expense Product from Settings.'
     )
     partner_id = fields.Many2one(
         'res.partner',
-        string='Vendor / Merchant Kontak',
-        help='Kontak vendor yang dicocokkan di Odoo.'
+        string='Vendor / Merchant Contact',
+        help='Vendor contact matched in Odoo.'
     )
     raw_json_text = fields.Text(
         string='Raw AI Response JSON',
@@ -74,7 +74,7 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
         self.ensure_one()
         expense = self.expense_id
         if not expense.exists():
-            raise UserError("Record Expense target tidak ditemukan.")
+            raise UserError("Target Expense record not found.")
 
         company = expense.company_id or self.env.company
 
@@ -91,8 +91,8 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
 
         if not effective_product:
             raise UserError(
-                "Tidak ditemukan produk beban yang aktif!\n\n"
-                "Silakan pilih produk beban di modal ini atau atur Default Expense Product pada menu Settings > AI Document Extraction."
+                "No active expense product found!\n\n"
+                "Please select an expense product in this modal or configure a Default Expense Product under Settings > AI Document Extraction."
             )
 
         # Write to expense
@@ -120,14 +120,14 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
         curr_name = self.currency_id.name or 'IDR'
         msg_body = f"""
         <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px;">
-            <h4 style="margin: 0 0 8px 0; color: #1e3a8a;">🧾 Hasil Ekstraksi Struk AI Diterapkan</h4>
+            <h4 style="margin: 0 0 8px 0; color: #1e3a8a;">🧾 AI Receipt Extraction Applied</h4>
             <table style="width: 100%; font-size: 13px;">
                 <tr><td><b>Merchant:</b></td><td>{self.merchant_name or '-'}</td></tr>
-                <tr><td><b>Tanggal:</b></td><td>{self.date or '-'}</td></tr>
+                <tr><td><b>Date:</b></td><td>{self.date or '-'}</td></tr>
                 <tr><td><b>Total:</b></td><td><b>{self.total_amount:,.2f} {curr_name}</b></td></tr>
-                <tr><td><b>Pajak:</b></td><td>{self.tax_amount:,.2f} {curr_name}</td></tr>
-                <tr><td><b>Kategori / Produk:</b></td><td>{effective_product.display_name}</td></tr>
-                <tr><td><b>Keterangan:</b></td><td>{self.description or '-'}</td></tr>
+                <tr><td><b>Tax:</b></td><td>{self.tax_amount:,.2f} {curr_name}</td></tr>
+                <tr><td><b>Category / Product:</b></td><td>{effective_product.display_name}</td></tr>
+                <tr><td><b>Description:</b></td><td>{self.description or '-'}</td></tr>
             </table>
         </div>
         """

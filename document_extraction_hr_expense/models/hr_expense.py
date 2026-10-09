@@ -85,13 +85,13 @@ class HrExpense(models.Model):
         self.ensure_one()
 
         if self.state not in ('draft', 'reported'):
-            raise UserError("Ekstraksi AI hanya dapat dijalankan pada Expense berstatus Draft / Reported.")
+            raise UserError("AI Extraction can only be performed on Expenses in Draft or Reported state.")
 
         attachments = self._get_document_attachments()
         if not attachments:
             raise UserError(
-                "Tidak ditemukan lampiran struk / bukti pengeluaran!\n\n"
-                "Silakan unggah foto struk kasir, nota, atau invoice PDF pada Chatter (ikon klip kertas) sebelum mengekstrak."
+                "No receipt or expense document attachment found!\n\n"
+                "Please upload a receipt photo, bill, or invoice PDF to the Chatter (paperclip icon) before extracting."
             )
 
         if len(attachments) > 1 and not self.env.context.get('skip_attachment_selector'):
@@ -105,7 +105,7 @@ class HrExpense(models.Model):
         """
         self.ensure_one()
         if not attachments:
-            raise UserError("Tidak ada lampiran bukti struk yang dipilih untuk diekstrak.")
+            raise UserError("No receipt attachments were selected for extraction.")
 
         self.write({
             'extraction_status': 'processing',
@@ -134,10 +134,10 @@ class HrExpense(models.Model):
                 'extraction_error': str(e),
             })
             self.message_post(
-                body=f"<p>❌ <b>AI Receipt Extraction Gagal</b>: {str(e)}</p>",
+                body=f"<p>❌ <b>AI Receipt Extraction Failed</b>: {str(e)}</p>",
                 subject="AI Extraction Error"
             )
-            raise UserError(f"AI Extraction Gagal: {str(e)}")
+            raise UserError(f"AI Extraction Failed: {str(e)}")
 
     def _open_expense_preview_wizard(self, data):
         """
@@ -149,7 +149,7 @@ class HrExpense(models.Model):
         merchant_name = (data.get('merchant_name') or '').strip()
         description = (data.get('description') or '').strip()
         if not description:
-            description = f"{merchant_name} - Pengeluaran" if merchant_name else self.name or "Pengeluaran"
+            description = f"{merchant_name} - Expense" if merchant_name else self.name or "Expense"
 
         # Date parsing
         raw_date = data.get('expense_date') or data.get('date')
@@ -194,7 +194,7 @@ class HrExpense(models.Model):
         wizard = self.env['hr.expense.ai.preview.wizard'].create(wizard_vals)
 
         return {
-            'name': f'Preview Ekstraksi Struk AI: {merchant_name or description or "Expense"}',
+            'name': f'AI Receipt Extraction Preview: {merchant_name or description or "Expense"}',
             'type': 'ir.actions.act_window',
             'res_model': 'hr.expense.ai.preview.wizard',
             'res_id': wizard.id,

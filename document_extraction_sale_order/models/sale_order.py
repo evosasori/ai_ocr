@@ -106,7 +106,7 @@ class SaleOrder(models.Model):
         string='PO Total Discrepancy',
         compute='_compute_ai_po_discrepancy',
         store=True,
-        help='Selisih antara total dokumen PO fisik dengan total yang dihitung Odoo.'
+        help='Difference between physical PO document total and Odoo calculated total.'
     )
     ai_po_discrepancy_dismissed = fields.Boolean(
         string='Discrepancy Dismissed',
@@ -137,13 +137,13 @@ class SaleOrder(models.Model):
         self.ensure_one()
 
         if self.state not in ('draft', 'sent'):
-            raise UserError("Ekstraksi AI hanya dapat dijalankan pada Sales Order berstatus Quotation (Draft).")
+            raise UserError("AI Extraction can only be performed on Sales Orders in Quotation (Draft) state.")
 
         attachments = self._get_document_attachments()
         if not attachments:
             raise UserError(
-                "Tidak ditemukan lampiran dokumen PO!\n\n"
-                "Silakan unggah dokumen PDF atau gambar Surat Pesanan / Purchase Order dari Customer pada Chatter (ikon klip kertas) sebelum mengekstrak."
+                "No Customer PO document attachment found!\n\n"
+                "Please upload a PDF or image of the Customer Purchase Order to the Chatter (paperclip icon) before extracting."
             )
 
         if len(attachments) > 1 and not self.env.context.get('skip_attachment_selector'):
@@ -157,7 +157,7 @@ class SaleOrder(models.Model):
         """
         self.ensure_one()
         if not attachments:
-            raise UserError("Tidak ada lampiran dokumen yang dipilih untuk diekstrak.")
+            raise UserError("No document attachments were selected for extraction.")
 
         self.write({
             'extraction_status': 'processing',
@@ -187,10 +187,10 @@ class SaleOrder(models.Model):
                 'extraction_error': str(e),
             })
             self.message_post(
-                body=f"<p>❌ <b>AI Customer PO Extraction Gagal</b>: {str(e)}</p>",
+                body=f"<p>❌ <b>AI Customer PO Extraction Failed</b>: {str(e)}</p>",
                 subject="AI Extraction Error"
             )
-            raise UserError(f"AI Extraction Gagal: {str(e)}")
+            raise UserError(f"AI Extraction Failed: {str(e)}")
 
     def _open_sale_order_preview_wizard(self, data):
         """
@@ -305,7 +305,7 @@ class SaleOrder(models.Model):
         wizard = self.env['sale.order.ai.preview.wizard'].create(wizard_vals)
 
         return {
-            'name': f'Preview AI PO Customer: {customer_name or po_number or "Sales Order"}',
+            'name': f'AI Customer PO Preview: {customer_name or po_number or "Sales Order"}',
             'type': 'ir.actions.act_window',
             'res_model': 'sale.order.ai.preview.wizard',
             'res_id': wizard.id,

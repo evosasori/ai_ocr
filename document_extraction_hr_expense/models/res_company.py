@@ -12,7 +12,7 @@ class ResCompany(models.Model):
         'product.product',
         string='Default Expense Product',
         domain="[('can_be_expensed', '=', True)]",
-        help='Produk biaya default yang digunakan jika tidak memilih produk pada ekstraksi receipt AI.'
+        help='Default expense product used when no product is selected during AI receipt extraction.'
     )
 
     def init(self):

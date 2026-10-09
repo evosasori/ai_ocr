@@ -111,7 +111,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
             'mode': 'single',
         })
         return {
-            'name': 'Pilih Dokumen untuk Ekstraksi AI',
+            'name': 'Select Documents for AI Extraction',
             'type': 'ir.actions.act_window',
             'res_model': 'ai.document.select.wizard',
             'res_id': wizard.id,
@@ -202,7 +202,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
         if not target_atts:
             target_atts = self._get_document_attachments()
         if not target_atts:
-            raise UserError("Tidak ditemukan lampiran dokumen untuk diekstrak.")
+            raise UserError("No document attachments found to extract.")
 
         if hasattr(target_atts, '_name') and target_atts._name == 'ir.attachment':
             att_records = target_atts
@@ -276,7 +276,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
                 except requests.exceptions.RequestException as e:
                     if attempt == max_retries - 1:
                         _logger.error("Network error communicating with Cloud Gateway: %s", str(e))
-                        raise UserError(f"Gagal menghubungi Odoo AI Cloud Gateway: {str(e)}")
+                        raise UserError(f"Failed to communicate with Odoo AI Cloud Gateway: {str(e)}")
                     time.sleep(2)
                     continue
 
@@ -290,8 +290,8 @@ class AiDocumentExtractMixin(models.AbstractModel):
                 err_data = response.json() if response.content else {}
                 upgrade_url = err_data.get('upgrade_url', f"{gateway_url}/upgrade?uuid={db_uuid}")
                 raise UserError(
-                    f"⚠️ Kuota ekstraksi AI gratis Anda telah habis!\n\n"
-                    f"Silakan lakukan top-up paket kuota untuk melanjutkan proses otomatisasi:\n"
+                    f"⚠️ Your AI document extraction quota has been exceeded!\n\n"
+                    f"Please top up or upgrade your plan to continue automated extraction:\n"
                     f"👉 {upgrade_url}"
                 )
 
@@ -307,7 +307,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
             res_json = response.json()
             choices = res_json.get('choices', [])
             if not choices:
-                raise UserError("Cloud Gateway mengembalikan respon kosong tanpa konten ekstraksi.")
+                raise UserError("Cloud Gateway returned an empty response without extraction content.")
 
             raw_text = choices[0].get('message', {}).get('content', '')
             model_used = res_json.get('model', 'cloud-vision-gateway')
@@ -322,9 +322,9 @@ class AiDocumentExtractMixin(models.AbstractModel):
             model = company.custom_ai_model or 'gpt-4o-mini'
 
             if not endpoint:
-                raise UserError(f"Custom Base URL wajib diisi untuk perusahaan '{company.name}'!")
+                raise UserError(f"Custom Base URL is required for company '{company.name}'!")
             if not api_key:
-                raise UserError(f"Custom API Key wajib diisi untuk perusahaan '{company.name}'!")
+                raise UserError(f"Custom API Key is required for company '{company.name}'!")
 
             chat_url = f"{endpoint}/chat/completions" if not endpoint.endswith('/chat/completions') else endpoint
             headers = {
@@ -349,7 +349,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
                 except requests.exceptions.RequestException as e:
                     if attempt == max_retries - 1:
                         _logger.error("Network error communicating with Custom AI: %s", str(e))
-                        raise UserError(f"Gagal menghubungi Custom AI Endpoint: {str(e)}")
+                        raise UserError(f"Failed to communicate with Custom AI Endpoint: {str(e)}")
                     time.sleep(2)
                     continue
 
@@ -370,7 +370,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
             res_json = response.json()
             choices = res_json.get('choices', [])
             if not choices:
-                raise UserError("Custom AI mengembalikan respon kosong tanpa konten ekstraksi.")
+                raise UserError("Custom AI returned an empty response without extraction content.")
 
             raw_text = choices[0].get('message', {}).get('content', '')
             self.sudo().write({'ai_model_used': model})
@@ -394,6 +394,6 @@ class AiDocumentExtractMixin(models.AbstractModel):
             return json.loads(cleaned)
         except json.JSONDecodeError as e:
             _logger.error("Failed to parse AI output into JSON: %s\nRaw output: %s", str(e), raw_text)
-            raise UserError(f"Respon AI tidak valid dalam format JSON: {str(e)}")
+            raise UserError(f"AI response is not valid JSON format: {str(e)}")
 
 

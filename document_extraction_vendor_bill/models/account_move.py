@@ -378,7 +378,7 @@ class AccountMove(models.Model):
         wizard = self.env['account.move.ai.preview.wizard'].create(wizard_vals)
 
         return {
-            'name': f'Preview AI Vision: {vendor_name or bill_number or "Vendor Bill"}',
+            'name': f'AI Vision Preview: {vendor_name or bill_number or "Vendor Bill"}',
             'type': 'ir.actions.act_window',
             'res_model': 'account.move.ai.preview.wizard',
             'res_id': wizard.id,

@@ -11,7 +11,7 @@
                 <xpath expr="//header" position="inside">
                     <button name="action_extract_customer_po_ai"
                             type="object"
-                            string="⚡ Ekstrak PO from Customer"
+                            string="⚡ Extract Customer PO with AI"
                             class="btn-secondary"
                             invisible="state not in ('draft', 'sent')"/>
                 </xpath>
@@ -21,12 +21,12 @@
                     <div class="alert alert-warning py-2 px-3 mb-2 small d-flex align-items-center justify-content-between"
                          invisible="not ai_po_discrepancy or ai_po_discrepancy_dismissed">
                         <div>
-                            <strong>⚠️ Selisih Nilai PO Terdeteksi:</strong>
-                            <span> Total dokumen fisik PO (<field name="ai_detected_total" widget="monetary" class="oe_inline"/>) berbeda dengan total sistem Odoo (<field name="amount_total" widget="monetary" class="oe_inline"/>). Selisih: <field name="ai_po_discrepancy" widget="monetary" class="oe_inline text-danger fw-bold"/>.</span>
+                            <strong>⚠️ PO Total Discrepancy Detected:</strong>
+                            <span> Physical PO document total (<field name="ai_detected_total" widget="monetary" class="oe_inline"/>) differs from Odoo calculated total (<field name="amount_total" widget="monetary" class="oe_inline"/>). Discrepancy: <field name="ai_po_discrepancy" widget="monetary" class="oe_inline text-danger fw-bold"/>.</span>
                         </div>
                         <button name="action_dismiss_ai_po_discrepancy"
                                 type="object"
-                                string="Tutup Peringatan"
+                                string="Dismiss Alert"
                                 class="btn btn-outline-secondary btn-sm"/>
                     </div>
                 </xpath>

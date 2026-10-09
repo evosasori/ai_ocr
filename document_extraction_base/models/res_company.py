@@ -14,51 +14,51 @@ class ResCompany(models.Model):
 
     ai_connection_mode = fields.Selection(
         [
-            ('cloud', 'Odoo AI Cloud Gateway (Gratis 50 Dokumen - Siap Pakai)'),
+            ('cloud', 'Odoo AI Cloud Gateway (Free 50 Documents - Ready to Use)'),
             ('custom', 'Custom AI Endpoint / BYOK (OpenAI Compatible)'),
         ],
         string='AI Connection Mode',
         default='cloud',
         required=True,
-        help='Pilih apakah perusahaan ini menggunakan Odoo AI Cloud Gateway (otomatis terhubung dengan lisensi & kuota trial) atau Custom Endpoint (BYOK OpenAI-compatible).'
+        help='Choose whether this company uses Odoo AI Cloud Gateway (auto-connected with license & trial quota) or Custom Endpoint (BYOK OpenAI-compatible).'
     )
 
     # Cloud Gateway Settings
     gateway_url = fields.Char(
         string='Cloud Gateway URL',
         default='https://ai-gateway.triadiputra.my.id',
-        help='Base URL server Odoo AI Cloud Gateway.'
+        help='Base URL of the Odoo AI Cloud Gateway server.'
     )
 
     # Custom / BYOK Settings
     custom_ai_endpoint = fields.Char(
         string='Custom Base URL',
         default='https://api.openai.com/v1',
-        help='Base URL API OpenAI-compatible (contoh: https://api.openai.com/v1, https://api.groq.com/openai/v1, atau Ollama)'
+        help='OpenAI-compatible API base URL (e.g., https://api.openai.com/v1, https://api.groq.com/openai/v1, or Ollama)'
     )
 
     custom_ai_api_key = fields.Char(
         string='Custom API Key',
-        help='API Key / Bearer token untuk Custom AI Endpoint.'
+        help='API Key / Bearer token for Custom AI Endpoint.'
     )
 
     custom_ai_model = fields.Char(
-        string='Model Vision AI',
+        string='Vision AI Model',
         default='gpt-4o-mini',
-        help='Kode model vision yang digunakan (contoh: gpt-4o-mini, llama-3.2-11b-vision-preview, dll).'
+        help='Vision model identifier to use (e.g., gpt-4o-mini, llama-3.2-11b-vision-preview, etc.).'
     )
 
     # Matching Rules
     auto_create_partner = fields.Boolean(
         string='Auto-Create Contact / Vendor',
         default=False,
-        help='Jika diaktifkan, otomatis membuat kontak/vendor baru jika tidak ditemukan kecocokan.'
+        help='If enabled, automatically creates a new contact/vendor if no match is found.'
     )
 
     auto_create_product = fields.Boolean(
         string='Auto-Create Products',
         default=False,
-        help='Jika diaktifkan, otomatis membuat produk baru jika tidak ditemukan barcode/SKU.'
+        help='If enabled, automatically creates a new product if no barcode or SKU match is found.'
     )
 
     def init(self):
@@ -109,8 +109,8 @@ class ResCompany(models.Model):
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
                     'params': {
-                        'title': f"⚡ Sisa Kuota AI ({self.name}): {remaining} Dokumen",
-                        'message': f"Paket: {plan}{model_str} | Terpakai: {quota_used}/{quota_limit} docs | Sisa Kuota: {remaining} docs (Latensi: {latency_ms} ms)",
+                        'title': f"⚡ AI Quota Remaining ({self.name}): {remaining} Documents",
+                        'message': f"Plan: {plan}{model_str} | Used: {quota_used}/{quota_limit} docs | Remaining: {remaining} docs (Latency: {latency_ms} ms)",
                         'type': 'success' if remaining > 10 else 'warning',
                         'sticky': False,
                     }
@@ -120,7 +120,7 @@ class ResCompany(models.Model):
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
                     'params': {
-                        'title': f"Gagal Cek Kuota (HTTP {response.status_code})",
+                        'title': f"Quota Check Failed (HTTP {response.status_code})",
                         'message': response.text[:200],
                         'type': 'danger',
                         'sticky': True,
@@ -131,7 +131,7 @@ class ResCompany(models.Model):
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
-                    'title': 'Gagal Menghubungi Cloud Gateway',
+                    'title': 'Failed to Connect to Cloud Gateway',
                     'message': str(e),
                     'type': 'danger',
                     'sticky': True,
@@ -165,9 +165,9 @@ class ResCompany(models.Model):
             model = self.custom_ai_model or 'gpt-4o-mini'
 
             if not endpoint:
-                raise UserError("Custom Base URL wajib diisi untuk mode BYOK.")
+                raise UserError("Custom Base URL is required for BYOK mode.")
             if not api_key:
-                raise UserError("Custom API Key wajib diisi untuk mode BYOK.")
+                raise UserError("Custom API Key is required for BYOK mode.")
 
             chat_url = f"{endpoint}/chat/completions" if not endpoint.endswith('/chat/completions') else endpoint
             headers = {
@@ -194,7 +194,7 @@ class ResCompany(models.Model):
                         'tag': 'display_notification',
                         'params': {
                             'title': f'Custom AI Connected! ({self.name}) 🚀',
-                            'message': f'Endpoint: {endpoint} | Model: {model} | Latensi: {latency_ms} ms',
+                            'message': f'Endpoint: {endpoint} | Model: {model} | Latency: {latency_ms} ms',
                             'type': 'success',
                             'sticky': False,
                         }
@@ -215,7 +215,7 @@ class ResCompany(models.Model):
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
                     'params': {
-                        'title': 'Koneksi ke Custom AI Gagal',
+                        'title': 'Connection to Custom AI Failed',
                         'message': str(e),
                         'type': 'danger',
                         'sticky': True,

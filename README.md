@@ -1,44 +1,44 @@
 # AI OCR & Document Extraction Suite for Odoo 18 / 19
 
-Koleksi modul Odoo untuk ekstraksi otomatis data dokumen (Purchase Orders, Vendor Bills, Employee Receipts) menggunakan multimodal AI Vision (Google Gemini & OpenAI-compatible endpoint).
+A comprehensive suite of Odoo modules for automated document extraction (Customer Purchase Orders, Vendor Bills, Employee Receipts) using multimodal AI Vision (Google Gemini & OpenAI-compatible endpoints).
 
 ---
 
-## 📦 Modul dalam Repositori
+## 📦 Modules in this Repository
 
-| Modul | Deskripsi | Dependensi Utama |
+| Module | Description | Key Dependencies |
 |---|---|---|
-| **`document_extraction_base`** | Fondasi engine AI Vision, mixin ekstraksi (`ai.document.extract.mixin`), konfigurasi gateway/BYOK, dan wizard pemilih dokumen | `base`, `mail` |
-| **`document_extraction_sale_order`** | Ekstraksi otomatis Customer Purchase Order (PO) PDF/gambar menjadi Sales Order di Odoo | `document_extraction_base`, `sale` |
-| **`document_extraction_vendor_bill`** | Ekstraksi otomatis Faktur Supplier / Vendor Bill PDF/gambar menjadi Vendor Bill di Odoo | `document_extraction_base`, `account` |
-| **`document_extraction_hr_expense`** | Ekstraksi otomatis kuitansi/struk pengeluaran karyawan menjadi Expense claim di Odoo | `document_extraction_base`, `hr_expense` |
+| **`document_extraction_base`** | Core multimodal AI Vision engine, extraction mixin (`ai.document.extract.mixin`), Cloud Gateway / BYOK settings, and document selector wizard | `base`, `mail` |
+| **`document_extraction_sale_order`** | Automatic extraction of Customer Purchase Orders (PO) into Sales Orders | `document_extraction_base`, `sale` |
+| **`document_extraction_vendor_bill`** | Automatic extraction of Supplier Invoices & Bills into Odoo Vendor Bills | `document_extraction_base`, `account` |
+| **`document_extraction_hr_expense`** | Automatic extraction of receipts and employee expenses into Odoo Expense records | `document_extraction_base`, `hr_expense` |
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Key Features
 
-- **Dual Mode AI:**
-  1. *Cloud Gateway*: Siap pakai langsung tanpa setup rumit.
-  2. *Bring Your Own Key (BYOK)*: Mendukung Google Gemini, OpenAI, Groq, Ollama, dan LiteLLM.
-- **Smart Reconciliation:**
-  - Pencocokan Partner/Vendor via NPWP/VAT, Email, Nomor Telepon, atau Nama.
-  - Pencocokan Baris Produk via SKU/Internal Reference, Barcode, atau Deskripsi.
-- **Integritas Bisnis & Pajak Terjamin:**
-  - Pajak, subtotal, dan total akhir dihitung ulang secara native oleh Odoo ORM (mencegah halusinasi angka AI).
-  - Peringatan deviasi jika total fisik dokumen berbeda dengan kalkulasi Odoo.
-- **Preview Wizard:**
-  - Review interaktif sebelum data masuk ke draft resmi Odoo.
-
----
-
-## 🛠️ Persyaratan & Instalasi
-
-1. Pastikan modul diletakkan di dalam folder `addons_path` Odoo Anda.
-2. Update App List di Odoo Developer Mode.
-3. Install modul `document_extraction_base` terlebih dahulu, lalu install modul ekstensi yang dibutuhkan (`document_extraction_sale_order`, `document_extraction_vendor_bill`, `document_extraction_hr_expense`).
-4. Atur konfigurasi API Key / Gateway pada menu **Settings > General Settings > AI Document Extraction**.
+- **Dual Mode AI Connectivity:**
+  1. *Odoo AI Cloud Gateway*: Instant, zero-config setup with free trial quota.
+  2. *Bring Your Own Key (BYOK)*: Full support for OpenAI, Google Gemini, Groq, Ollama, and LiteLLM.
+- **Smart Partner & Product Reconciliation:**
+  - Matches Customer / Vendor by Tax ID / VAT, Email, Phone, or Name.
+  - Matches line items by SKU / Internal Reference, Barcode, or Product Name.
+- **Financial & Tax Integrity:**
+  - Taxes, subtotals, and grand totals are natively computed by Odoo ORM (eliminating AI numerical hallucinations).
+  - Real-time discrepancy alerts if physical document totals differ from Odoo calculations.
+- **Interactive Preview Wizard:**
+  - User verification modal before applying data into formal Odoo draft records.
 
 ---
 
-## 📄 Lisensi
+## 🛠️ Requirements & Installation
+
+1. Place the modules inside your Odoo `addons_path`.
+2. Update the App List in Odoo Developer Mode.
+3. Install `document_extraction_base` first, then install the desired extension modules (`document_extraction_sale_order`, `document_extraction_vendor_bill`, `document_extraction_hr_expense`).
+4. Configure your connection settings under **Settings > General Settings > AI Document Extraction**.
+
+---
+
+## 📄 License
 LGPL-3

@@ -23,8 +23,8 @@
                             </group>
                         </group>
                         <div class="mt-3 d-flex gap-2">
-                            <button name="action_check_quota_status" type="object" string="⚡ Cek Kuota Cloud Gateway" class="btn btn-secondary" invisible="ai_connection_mode != 'cloud'"/>
-                            <button name="action_open_topup_portal" type="object" string="💳 Buka Portal Top-Up" class="btn btn-success" invisible="ai_connection_mode != 'cloud'"/>
+                            <button name="action_check_quota_status" type="object" string="⚡ Check Cloud Gateway Quota" class="btn btn-secondary" invisible="ai_connection_mode != 'cloud'"/>
+                            <button name="action_open_topup_portal" type="object" string="💳 Open Top-Up Portal" class="btn btn-success" invisible="ai_connection_mode != 'cloud'"/>
                             <button name="action_test_ai_connection" type="object" string="⚡ Test Custom AI Connection" class="btn btn-primary" invisible="ai_connection_mode != 'custom'"/>
                         </div>
                     </page>

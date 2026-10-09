@@ -4,25 +4,25 @@
         <field name="name">hr.expense.ai.preview.wizard.form</field>
         <field name="model">hr.expense.ai.preview.wizard</field>
         <field name="arch" type="xml">
-            <form string="Preview Ekstraksi Struk Pengeluaran AI">
+            <form string="AI Expense Receipt Extraction Preview">
                 <field name="expense_id" invisible="1"/>
 
                 <div class="alert alert-info d-flex align-items-center mb-3">
                     <i class="fa fa-receipt fa-2x me-3 text-info"/>
                     <div>
-                        <strong class="d-block mb-1">Hasil Analisa Struk / Bukti Pengeluaran AI:</strong>
-                        <span>Periksa dan sesuaikan rincian di bawah ini sebelum diterapkan ke record Expense.</span>
+                        <strong class="d-block mb-1">AI Receipt Extraction Analysis Results:</strong>
+                        <span>Review and adjust the details below before applying them to the Expense record.</span>
                     </div>
                 </div>
 
                 <group>
-                    <group string="Informasi Transaksi">
-                        <field name="merchant_name" placeholder="Nama Toko / Restoran / Vendor"/>
+                    <group string="Transaction Information">
+                        <field name="merchant_name" placeholder="Store / Restaurant / Vendor Name"/>
                         <field name="date"/>
-                        <field name="description" placeholder="Keterangan pengeluaran..."/>
-                        <field name="partner_id" options="{'no_create': True}" placeholder="Pilih kontak jika ada..."/>
+                        <field name="description" placeholder="Expense description..."/>
+                        <field name="partner_id" options="{'no_create': True}" placeholder="Select contact if applicable..."/>
                     </group>
-                    <group string="Nominal &amp; Pembayaran">
+                    <group string="Amount &amp; Payment">
                         <field name="currency_id" options="{'no_create': True, 'no_open': True}"/>
                         <field name="total_amount" class="oe_inline fw-bold text-primary fs-5"/>
                         <field name="tax_amount"/>
@@ -31,14 +31,14 @@
                 </group>
 
                 <!-- Optional Product Selection Section -->
-                <group string="Kategori / Produk Beban">
+                <group string="Expense Category / Product">
                     <field name="product_id" 
                            options="{'no_create': True}"
-                           placeholder="Pilih produk beban atau biarkan kosong untuk menggunakan Default Settings..."/>
+                           placeholder="Select expense product or leave blank to use Default Settings..."/>
                 </group>
                 <div class="alert alert-light border py-2 px-3 small text-muted">
                     <i class="fa fa-info-circle me-1 text-primary"/>
-                    <span><b>Catatan:</b> Pilihan produk di atas bersifat <i>opsional</i>. Jika dikosongkan, sistem secara otomatis akan menggunakan <b>Default Expense Product</b> yang telah diatur di Settings.</span>
+                    <span><b>Note:</b> Product selection above is <i>optional</i>. If left empty, the system automatically applies the <b>Default Expense Product</b> configured in Settings.</span>
                 </div>
 
                 <notebook invisible="not raw_json_text">
@@ -49,10 +49,10 @@
 
                 <footer>
                     <button name="action_apply_to_expense" 
-                            string="✅ Konfirmasi &amp; Terapkan ke Expense" 
+                            string="✅ Confirm &amp; Apply to Expense" 
                             type="object" 
                             class="btn-primary"/>
-                    <button string="Batal" 
+                    <button string="Cancel" 
                             class="btn-secondary" 
                             special="cancel"/>
                 </footer>

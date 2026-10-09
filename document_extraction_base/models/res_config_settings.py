@@ -14,49 +14,49 @@ class ResConfigSettings(models.TransientModel):
         readonly=False,
         required=True,
         string='AI Connection Mode',
-        help='Pilih apakah perusahaan ini menggunakan Odoo AI Cloud Gateway atau Custom Endpoint (BYOK).'
+        help='Choose whether this company uses Odoo AI Cloud Gateway or Custom Endpoint (BYOK).'
     )
 
     gateway_url = fields.Char(
         related='company_id.gateway_url',
         readonly=False,
         string='Cloud Gateway URL',
-        help='Base URL server Odoo AI Cloud Gateway.'
+        help='Base URL of the Odoo AI Cloud Gateway server.'
     )
 
     custom_ai_endpoint = fields.Char(
         related='company_id.custom_ai_endpoint',
         readonly=False,
         string='Custom Base URL',
-        help='Base URL API OpenAI-compatible (contoh: https://api.openai.com/v1 atau https://api.groq.com/openai/v1)'
+        help='OpenAI-compatible API base URL (e.g., https://api.openai.com/v1 or https://api.groq.com/openai/v1)'
     )
 
     custom_ai_api_key = fields.Char(
         related='company_id.custom_ai_api_key',
         readonly=False,
         string='Custom API Key',
-        help='API Key / Bearer token untuk Custom AI Endpoint.'
+        help='API Key / Bearer token for Custom AI Endpoint.'
     )
 
     custom_ai_model = fields.Char(
         related='company_id.custom_ai_model',
         readonly=False,
-        string='Model Vision AI',
-        help='Kode model vision yang digunakan (contoh: gpt-4o-mini, llama-3.2-11b-vision-preview, dll).'
+        string='Vision AI Model',
+        help='Vision model identifier to use (e.g., gpt-4o-mini, llama-3.2-11b-vision-preview, etc.).'
     )
 
     auto_create_partner = fields.Boolean(
         related='company_id.auto_create_partner',
         readonly=False,
         string='Auto-Create Contact / Vendor',
-        help='Jika diaktifkan, otomatis membuat kontak/vendor baru jika tidak ditemukan kecocokan.'
+        help='If enabled, automatically creates a new contact/vendor if no match is found.'
     )
 
     auto_create_product = fields.Boolean(
         related='company_id.auto_create_product',
         readonly=False,
         string='Auto-Create Products',
-        help='Jika diaktifkan, otomatis membuat produk baru jika tidak ditemukan barcode/SKU.'
+        help='If enabled, automatically creates a new product if no barcode or SKU match is found.'
     )
 
     def action_check_quota_status(self):

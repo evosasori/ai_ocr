@@ -4,7 +4,7 @@
         <field name="name">ai.document.select.wizard.form</field>
         <field name="model">ai.document.select.wizard</field>
         <field name="arch" type="xml">
-            <form string="Pilih Dokumen untuk Ekstraksi AI">
+            <form string="Select Documents for AI Extraction">
                 <field name="res_model" invisible="1"/>
                 <field name="res_id" invisible="1"/>
                 <field name="available_attachment_ids" invisible="1"/>
@@ -12,8 +12,8 @@
                 <div class="alert alert-primary d-flex align-items-center mb-3">
                     <i class="fa fa-files-o fa-2x me-3 text-primary"/>
                     <div>
-                        <strong class="d-block mb-1">Terdeteksi Lebih Dari 1 Lampiran Dokumen:</strong>
-                        <span>Tentukan apakah Anda ingin mengekstrak satu dokumen spesifik atau menggabungkan beberapa file (misalnya dokumen terpisah / halaman lanjutan) menjadi satu transaksi.</span>
+                        <strong class="d-block mb-1">Multiple Document Attachments Detected:</strong>
+                        <span>Choose whether to extract a single document or merge multiple files (such as separate pages or continuation sheets) into a single transaction.</span>
                     </div>
                 </div>
 
@@ -22,7 +22,7 @@
                 </group>
 
                 <!-- Single Mode -->
-                <group invisible="mode != 'single'" string="Pilih Dokumen Utama">
+                <group invisible="mode != 'single'" string="Select Primary Document">
                     <field name="selected_attachment_id" 
                            options="{'no_create': True, 'no_open': True}" 
                            domain="[('id', 'in', available_attachment_ids)]"
@@ -31,11 +31,11 @@
 
                 <div class="alert alert-secondary py-2 px-3 small" invisible="mode != 'single'">
                     <i class="fa fa-check-circle me-1 text-success"/>
-                    <span>Mode Dokumen Tunggal hanya menggunakan <b>1 limit kuota</b>.</span>
+                    <span>Single Document Mode uses <b>1 quota credit</b>.</span>
                 </div>
 
                 <!-- Merge Mode -->
-                <group invisible="mode != 'merge'" string="Pilih Dokumen yang Ingin Digabungkan">
+                <group invisible="mode != 'merge'" string="Select Documents to Merge">
                     <field name="selected_attachment_ids" 
                            widget="many2many_checkboxes" 
                            domain="[('id', 'in', available_attachment_ids)]"
@@ -46,21 +46,21 @@
                 <div class="alert alert-warning py-3 px-3 mt-3 d-flex align-items-start" invisible="mode != 'merge'">
                     <i class="fa fa-exclamation-triangle fa-2x me-3 text-warning"/>
                     <div>
-                        <strong class="d-block mb-1">⚠️ PERINGATAN PENGGUNAAN KUOTA (MULTI-DOKUMEN):</strong>
+                        <strong class="d-block mb-1">⚠️ MULTI-DOCUMENT QUOTA NOTICE:</strong>
                         <span>
-                            Menggabungkan dokumen akan menggunakan kuota sesuai dengan jumlah dokumen yang dipilih.
-                            Saat ini Anda memilih <b><field name="quota_cost" class="oe_inline"/> dokumen</b>, sehingga 
-                            <b><field name="quota_cost" class="oe_inline"/> limit kuota</b> akan dipotong dari saldo instance Anda saat ekstraksi berjalan.
+                            Merging documents consumes quota credits proportional to the number of selected files.
+                            You selected <b><field name="quota_cost" class="oe_inline"/> documents</b>, which will consume 
+                            <b><field name="quota_cost" class="oe_inline"/> quota credits</b> from your instance balance upon extraction.
                         </span>
                     </div>
                 </div>
 
                 <footer>
                     <button name="action_confirm_extract" 
-                            string="⚡ Lanjutkan Ekstraksi AI" 
+                            string="⚡ Proceed with AI Extraction" 
                             type="object" 
                             class="btn-primary"/>
-                    <button string="Batal" 
+                    <button string="Cancel" 
                             class="btn-secondary" 
                             special="cancel"/>
                 </footer>

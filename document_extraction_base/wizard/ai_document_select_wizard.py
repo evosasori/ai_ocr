@@ -10,40 +10,40 @@ class AiDocumentSelectWizard(models.TransientModel):
     _name = 'ai.document.select.wizard'
     _description = 'AI Document Selection & Merge Wizard'
 
-    res_model = fields.Char(string='Model Terkait', required=True)
-    res_id = fields.Integer(string='ID Record', required=True)
+    res_model = fields.Char(string='Related Model', required=True)
+    res_id = fields.Integer(string='Record ID', required=True)
 
     available_attachment_ids = fields.Many2many(
         'ir.attachment',
         'ai_select_wizard_avail_rel',
-        string='Lampiran Tersedia',
+        string='Available Attachments',
         readonly=True
     )
 
     mode = fields.Selection([
-        ('single', 'Pilih Satu Dokumen Spesifik'),
-        ('merge', 'Gabungkan Beberapa Dokumen (Multi-Dokumen / Lampiran Terpisah)')
-    ], string='Mode Ekstraksi', default='single', required=True)
+        ('single', 'Select Single Document'),
+        ('merge', 'Merge Multiple Documents (Multi-page / Separate Files)')
+    ], string='Extraction Mode', default='single', required=True)
 
     selected_attachment_id = fields.Many2one(
         'ir.attachment',
-        string='Dokumen Utama',
+        string='Primary Document',
         domain="[('id', 'in', available_attachment_ids)]",
-        help='Pilih satu file yang menjadi dokumen utama yang ingin diekstrak.'
+        help='Select the primary document to extract.'
     )
 
     selected_attachment_ids = fields.Many2many(
         'ir.attachment',
         'ai_select_wizard_chosen_rel',
-        string='Dokumen yang Digabung',
+        string='Merged Documents',
         domain="[('id', 'in', available_attachment_ids)]",
-        help='Centang dokumen-dokumen yang ingin digabungkan ke dalam 1 proses ekstraksi AI.'
+        help='Select documents to combine into a single AI extraction process.'
     )
 
     quota_cost = fields.Integer(
-        string='Biaya Kuota',
+        string='Quota Cost',
         compute='_compute_quota_cost',
-        help='Estimasi jumlah limit kuota yang akan dipotong dari saldo instance Anda.'
+        help='Estimated quota usage deducted from your instance balance.'
     )
 
     @api.depends('mode', 'selected_attachment_id', 'selected_attachment_ids')
@@ -62,20 +62,20 @@ class AiDocumentSelectWizard(models.TransientModel):
 
         if self.mode == 'single':
             if not self.selected_attachment_id:
-                raise UserError("Silakan tentukan salah satu dokumen yang ingin diekstrak.")
+                raise UserError("Please select a document to extract.")
             chosen_attachments = self.selected_attachment_id
         else:
             if not self.selected_attachment_ids:
-                raise UserError("Silakan centang minimal 1 dokumen untuk digabungkan.")
+                raise UserError("Please select at least 1 document to merge.")
             chosen_attachments = self.selected_attachment_ids
 
         target_record = self.env[self.res_model].browse(self.res_id)
         if not target_record.exists():
-            raise UserError(f"Record sumber '{self.res_model} (ID: {self.res_id})' tidak ditemukan.")
+            raise UserError(f"Source record '{self.res_model} (ID: {self.res_id})' not found.")
 
         if hasattr(target_record, 'action_execute_ai_extraction'):
             return target_record.action_execute_ai_extraction(chosen_attachments)
         else:
             raise UserError(
-                f"Model '{self.res_model}' belum mendukung metode action_execute_ai_extraction()."
+                f"Model '{self.res_model}' does not support action_execute_ai_extraction()."
             )

@@ -10,22 +10,22 @@
                 <xpath expr="//form" position="inside">
                     <app data-string="AI Document Extraction" string="AI Document Extraction" name="document_extraction_base">
                         <block title="AI Engine &amp; Connectivity" name="ai_connectivity_block">
-                            <setting id="ai_connection_mode_setting" string="Mode Koneksi AI" help="Pilih antara Odoo AI Cloud Gateway (otomatis dengan kuota gratis) atau Custom AI Endpoint (BYOK).">
+                            <setting id="ai_connection_mode_setting" string="AI Connection Mode" help="Choose between Odoo AI Cloud Gateway (automatic with free trial quota) or Custom AI Endpoint (BYOK).">
                                 <field name="ai_connection_mode" widget="radio"/>
                             </setting>
 
                             <!-- Cloud Gateway Settings & Quota Monitoring -->
-                            <setting id="cloud_gateway_setting" string="Odoo AI Cloud Gateway" help="Layanan cloud terkelola dengan 50 ekstraksi gratis bawaan. Kuota dihitung otomatis berdasarkan database UUID Odoo Anda." invisible="ai_connection_mode != 'cloud'">
+                            <setting id="cloud_gateway_setting" string="Odoo AI Cloud Gateway" help="Managed cloud service with 50 free extractions included. Quota is tracked automatically based on your Odoo database UUID." invisible="ai_connection_mode != 'cloud'">
                                 <div class="content-group">
                                     <div class="alert alert-info py-2 px-3 mb-2 small d-flex align-items-center justify-content-between">
                                         <div>
-                                            <strong>🟢 Terhubung ke Odoo AI Cloud Gateway</strong><br/>
-                                            <span>Sistem lisensi &amp; kuota trial 50 dokumen aktif otomatis tanpa konfigurasi manual.</span>
+                                            <strong>🟢 Connected to Odoo AI Cloud Gateway</strong><br/>
+                                            <span>Licensing &amp; 50-document trial quota active automatically without manual setup.</span>
                                         </div>
                                     </div>
                                     <div class="d-flex align-items-center gap-2 mt-2">
-                                        <button name="action_check_quota_status" type="object" string="⚡ Cek Sisa Kuota" class="btn btn-secondary btn-sm"/>
-                                        <button name="action_open_topup_portal" type="object" string="💳 Beli Kuota / Top-Up Portal" class="btn btn-success btn-sm"/>
+                                        <button name="action_check_quota_status" type="object" string="⚡ Check Remaining Quota" class="btn btn-secondary btn-sm"/>
+                                        <button name="action_open_topup_portal" type="object" string="💳 Buy Quota / Top-Up Portal" class="btn btn-success btn-sm"/>
                                     </div>
                                     <div class="text-muted small mt-2">
                                         <span>Gateway Server: </span><code><field name="gateway_url" class="oe_inline" readonly="1"/></code>
@@ -34,31 +34,31 @@
                             </setting>
 
                             <!-- Custom BYOK Settings -->
-                            <setting id="custom_endpoint_setting" string="Custom Base URL" help="Base URL API OpenAI-compatible (contoh: https://api.openai.com/v1, https://api.groq.com/openai/v1, atau Ollama lokal)." invisible="ai_connection_mode != 'custom'">
+                            <setting id="custom_endpoint_setting" string="Custom Base URL" help="OpenAI-compatible API base URL (e.g., https://api.openai.com/v1, https://api.groq.com/openai/v1, or local Ollama)." invisible="ai_connection_mode != 'custom'">
                                 <field name="custom_ai_endpoint" placeholder="https://api.openai.com/v1"/>
                             </setting>
 
-                            <setting id="custom_api_key_setting" string="Custom API Key" help="Bearer token API Key untuk endpoint kustom Anda." invisible="ai_connection_mode != 'custom'">
+                            <setting id="custom_api_key_setting" string="Custom API Key" help="API Key Bearer token for your custom endpoint." invisible="ai_connection_mode != 'custom'">
                                 <field name="custom_ai_api_key" password="True" placeholder="sk-..."/>
                             </setting>
 
-                            <setting id="custom_model_setting" string="Model Vision AI" help="Kode model vision multimodal (contoh: gpt-4o-mini, llama-3.2-11b-vision-preview)." invisible="ai_connection_mode != 'custom'">
+                            <setting id="custom_model_setting" string="Vision AI Model" help="Multimodal vision model code (e.g., gpt-4o-mini, llama-3.2-11b-vision-preview)." invisible="ai_connection_mode != 'custom'">
                                 <field name="custom_ai_model" placeholder="gpt-4o-mini"/>
                             </setting>
 
-                            <setting id="custom_test_setting" string="Diagnostik Custom AI" help="Uji koneksi ke endpoint kustom Anda." invisible="ai_connection_mode != 'custom'">
+                            <setting id="custom_test_setting" string="Custom AI Diagnostics" help="Test connectivity to your custom AI endpoint." invisible="ai_connection_mode != 'custom'">
                                 <div class="mt-2">
-                                    <button name="action_test_ai_connection" type="object" string="⚡ Uji Koneksi Custom AI" class="btn btn-primary btn-sm"/>
+                                    <button name="action_test_ai_connection" type="object" string="⚡ Test Custom AI Connection" class="btn btn-primary btn-sm"/>
                                 </div>
                             </setting>
                         </block>
 
                         <block title="Matching &amp; Safe Auto-Creation Rules" name="ai_matching_rules_block">
-                            <setting id="auto_create_partner_setting" string="Auto-Create Contact / Vendor" help="Jika diaktifkan, otomatis membuat kontak/vendor baru jika tidak ditemukan kecocokan berdasarkan NPWP, Email, Telepon, atau Nama.">
+                            <setting id="auto_create_partner_setting" string="Auto-Create Contact / Vendor" help="If enabled, automatically creates a new contact/vendor when no match is found via VAT, Email, Phone, or Name.">
                                 <field name="auto_create_partner"/>
                             </setting>
 
-                            <setting id="auto_create_product_setting" string="Auto-Create Products" help="Jika diaktifkan, otomatis membuat produk baru jika tidak ditemukan Barcode atau SKU. Saat nonaktif, baris faktur tetap dicatat rapi pada deskripsi.">
+                            <setting id="auto_create_product_setting" string="Auto-Create Products" help="If enabled, automatically creates a new product when no Barcode or SKU match is found. When disabled, line items are still recorded cleanly in the description.">
                                 <field name="auto_create_product"/>
                             </setting>
                         </block>

@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class SaleOrderAiPreviewWizard(models.TransientModel):
     _name = 'sale.order.ai.preview.wizard'
-    _description = 'Preview & Konfirmasi Ekstraksi AI Sales Order'
+    _description = 'AI Sales Order Extraction Preview & Confirmation'
 
     order_id = fields.Many2one(
         'sale.order',
@@ -26,52 +26,52 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
     )
     currency_id = fields.Many2one(
         'res.currency',
-        string='Mata Uang',
+        string='Currency',
         default=lambda self: self.env.company.currency_id
     )
 
     partner_id = fields.Many2one(
         'res.partner',
-        string='Pelanggan Odoo',
-        help='Kontak customer yang dicocokkan di database Odoo.'
+        string='Odoo Customer',
+        help='Customer contact matched in Odoo database.'
     )
     partner_name_raw = fields.Char(
-        string='Nama Pelanggan (Hasil OCR)',
+        string='Customer Name (OCR)',
         readonly=True
     )
 
     client_order_ref = fields.Char(
-        string='No. PO Pelanggan (Ref)',
-        help='Nomor Purchase Order resmi dari customer.'
+        string='Customer PO No. (Ref)',
+        help='Customer Purchase Order reference.'
     )
     date_order = fields.Date(
-        string='Tanggal Order PO'
+        string='PO Order Date'
     )
     commitment_date = fields.Date(
-        string='Target Pengiriman (Delivery Date)'
+        string='Expected Delivery Date'
     )
 
     detected_total = fields.Monetary(
-        string='Total PO (OCR)',
+        string='PO Total (OCR)',
         currency_field='currency_id'
     )
     detected_subtotal = fields.Monetary(
-        string='Subtotal PO (OCR)',
+        string='PO Subtotal (OCR)',
         currency_field='currency_id'
     )
     detected_tax = fields.Monetary(
-        string='Pajak PO (OCR)',
+        string='PO Tax (OCR)',
         currency_field='currency_id'
     )
 
     line_ids = fields.One2many(
         'sale.order.ai.preview.wizard.line',
         'wizard_id',
-        string='Rincian Item Pesanan'
+        string='Order Line Items'
     )
 
     raw_json_text = fields.Text(
-        string='Hasil Mentah OCR & JSON',
+        string='Raw OCR & JSON Output',
         readonly=True
     )
 
@@ -83,7 +83,7 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
         order = self.order_id
 
         if order.state not in ('draft', 'sent'):
-            raise UserError("Sales Order ini tidak lagi dalam status draft/quotation.")
+            raise UserError("This Sales Order is no longer in draft or quotation state.")
 
         order_vals = {
             'client_order_ref': self.client_order_ref or order.client_order_ref,
@@ -136,7 +136,7 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
         order.write(order_vals)
 
         order.message_post(
-            body=f"<p>✅ <b>AI PO Extraction Disetujui & Diterapkan</b>: {len(self.line_ids)} baris item dimasukkan.</p>",
+            body=f"<p>✅ <b>AI PO Extraction Approved & Applied</b>: {len(self.line_ids)} line items inserted.</p>",
             subject="AI Customer PO Applied"
         )
 
@@ -144,8 +144,8 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Berhasil Diterapkan ke Sales Order! 📄✨',
-                'message': f"Data PO Customer berhasil dimasukkan ke '{order.name}'.",
+                'title': 'Applied to Sales Order Successfully! 📄✨',
+                'message': f"Customer PO data applied successfully to '{order.name}'.",
                 'type': 'success',
                 'sticky': False,
                 'next': {
@@ -158,7 +158,7 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
 
 class SaleOrderAiPreviewWizardLine(models.TransientModel):
     _name = 'sale.order.ai.preview.wizard.line'
-    _description = 'Line Item Preview Ekstraksi AI Sales Order'
+    _description = 'AI Sales Order Preview Line Item'
 
     wizard_id = fields.Many2one(
         'sale.order.ai.preview.wizard',
@@ -173,23 +173,23 @@ class SaleOrderAiPreviewWizardLine(models.TransientModel):
 
     product_id = fields.Many2one(
         'product.product',
-        string='Produk Odoo',
-        help='Produk Odoo yang dicocokkan otomatis.'
+        string='Odoo Product',
+        help='Automatically matched Odoo product.'
     )
     description = fields.Char(
-        string='Deskripsi Item',
+        string='Item Description',
         required=True
     )
     product_uom_qty = fields.Float(
-        string='Kuantiti',
+        string='Quantity',
         default=1.0
     )
     price_unit = fields.Monetary(
-        string='Harga Satuan',
+        string='Unit Price',
         currency_field='currency_id'
     )
     discount = fields.Float(
-        string='Diskon (%)',
+        string='Discount (%)',
         default=0.0
     )
     price_subtotal = fields.Monetary(

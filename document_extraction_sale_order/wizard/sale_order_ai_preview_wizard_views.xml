@@ -5,21 +5,21 @@
             <field name="name">sale.order.ai.preview.wizard.form</field>
             <field name="model">sale.order.ai.preview.wizard</field>
             <field name="arch" type="xml">
-                <form string="Preview &amp; Verifikasi PO Pelanggan">
+                <form string="Customer PO Extraction Preview &amp; Verification">
                     <div class="alert alert-info py-2 px-3 mb-3 small d-flex align-items-center justify-content-between">
                         <div>
-                            <strong>🔍 Preview Ekstraksi PO Pelanggan (Customer Purchase Order)</strong><br/>
-                            <span>Silakan tinjau data pelanggan, nomor PO, tanggal, dan rincian produk sebelum dimasukkan ke Sales Order.</span>
+                            <strong>🔍 Customer Purchase Order (PO) Extraction Preview</strong><br/>
+                            <span>Please review customer info, PO reference, dates, and order lines before applying them to the Sales Order.</span>
                         </div>
                     </div>
 
                     <group>
-                        <group string="Identitas Pelanggan &amp; PO">
+                        <group string="Customer &amp; PO Details">
                             <field name="partner_name_raw"/>
                             <field name="partner_id" options="{'no_create_edit': False}"/>
                             <field name="client_order_ref"/>
                         </group>
-                        <group string="Tanggal &amp; Finansial">
+                        <group string="Dates &amp; Financial Totals">
                             <field name="date_order"/>
                             <field name="commitment_date"/>
                             <field name="currency_id" options="{'no_create': True}"/>
@@ -30,7 +30,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Rincian Item Pesanan (Lines)" name="lines_page">
+                        <page string="Order Line Items" name="lines_page">
                             <field name="line_ids">
                                 <list editable="bottom">
                                     <field name="description"/>
@@ -43,17 +43,17 @@
                             </field>
                         </page>
 
-                        <page string="Hasil Mentah OCR &amp; JSON" name="raw_json_page">
+                        <page string="Raw OCR &amp; JSON Output" name="raw_json_page">
                             <div class="text-muted small mb-2">
-                                <span>Salin JSON mentah jika diperlukan:</span>
+                                <span>Copy raw JSON output if needed:</span>
                             </div>
                             <field name="raw_json_text" readonly="1" class="font-monospace" style="font-size: 11px; height: 300px;"/>
                         </page>
                     </notebook>
 
                     <footer>
-                        <button name="action_apply_to_sale_order" type="object" string="✅ Terapkan ke Sales Order" class="btn btn-primary" default_focus="1"/>
-                        <button string="Batal" class="btn btn-secondary" special="cancel"/>
+                        <button name="action_apply_to_sale_order" type="object" string="✅ Apply to Sales Order" class="btn btn-primary" default_focus="1"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
                     </footer>
                 </form>
             </field>

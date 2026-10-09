@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class AccountMoveAiPreviewWizard(models.TransientModel):
     _name = 'account.move.ai.preview.wizard'
-    _description = 'Preview & Konfirmasi Ekstraksi AI Vendor Bill'
+    _description = 'AI Vendor Bill Extraction Preview & Confirmation'
 
     move_id = fields.Many2one(
         'account.move',
@@ -26,33 +26,33 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
     )
     currency_id = fields.Many2one(
         'res.currency',
-        string='Mata Uang',
+        string='Currency',
         default=lambda self: self.env.company.currency_id
     )
 
     partner_id = fields.Many2one(
         'res.partner',
-        string='Vendor Odoo Terkait',
-        help='Kontak vendor yang dicocokkan di database Odoo.'
+        string='Matched Odoo Vendor',
+        help='Vendor contact matched in Odoo database.'
     )
     partner_name_raw = fields.Char(
-        string='Nama Vendor (Hasil OCR)',
+        string='Vendor Name (OCR)',
         readonly=True
     )
 
     ref = fields.Char(
-        string='No. Referensi / Tagihan',
-        help='Nomor faktur vendor atau invoice number.'
+        string='Bill / Reference No.',
+        help='Vendor bill or invoice reference number.'
     )
     invoice_date = fields.Date(
-        string='Tanggal Faktur'
+        string='Bill Date'
     )
     invoice_date_due = fields.Date(
-        string='Tanggal Jatuh Tempo'
+        string='Due Date'
     )
 
     detected_total = fields.Monetary(
-        string='Total Tagihan (OCR)',
+        string='Bill Total (OCR)',
         currency_field='currency_id'
     )
     detected_subtotal = fields.Monetary(
@@ -60,18 +60,18 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         currency_field='currency_id'
     )
     detected_tax = fields.Monetary(
-        string='Pajak (OCR)',
+        string='Tax (OCR)',
         currency_field='currency_id'
     )
 
     line_ids = fields.One2many(
         'account.move.ai.preview.wizard.line',
         'wizard_id',
-        string='Rincian Item'
+        string='Line Items'
     )
 
     raw_json_text = fields.Text(
-        string='Hasil Mentah OCR & JSON',
+        string='Raw OCR & JSON Output',
         readonly=True
     )
 
@@ -83,7 +83,7 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         move = self.move_id
 
         if move.state != 'draft':
-            raise UserError("Faktur ini tidak lagi dalam status draft.")
+            raise UserError("This bill is no longer in draft state.")
 
         # Update move header
         move_vals = {
@@ -145,7 +145,7 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
 
         # Log confirmation in chatter
         move.message_post(
-            body=f"<p>✅ <b>AI Vision Extraction Disetujui & Diterapkan</b>: {len(self.line_ids)} baris item dimasukkan.</p>",
+            body=f"<p>✅ <b>AI Vision Extraction Approved & Applied</b>: {len(self.line_ids)} line items inserted.</p>",
             subject="AI Extraction Applied"
         )
 
@@ -153,8 +153,8 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Berhasil Diterapkan! 📄✨',
-                'message': f"Data ekstraksi AI berhasil dimasukkan ke faktur '{move.name or move.ref or ''}'.",
+                'title': 'Applied Successfully! 📄✨',
+                'message': f"AI extraction data applied successfully to bill '{move.name or move.ref or ''}'.",
                 'type': 'success',
                 'sticky': False,
                 'next': {
@@ -167,7 +167,7 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
 
 class AccountMoveAiPreviewWizardLine(models.TransientModel):
     _name = 'account.move.ai.preview.wizard.line'
-    _description = 'Line Item Preview Ekstraksi AI'
+    _description = 'AI Extraction Preview Line Item'
 
     wizard_id = fields.Many2one(
         'account.move.ai.preview.wizard',
@@ -182,23 +182,23 @@ class AccountMoveAiPreviewWizardLine(models.TransientModel):
 
     product_id = fields.Many2one(
         'product.product',
-        string='Produk Odoo',
-        help='Produk Odoo yang dicocokkan otomatis.'
+        string='Odoo Product',
+        help='Automatically matched Odoo product.'
     )
     description = fields.Char(
-        string='Deskripsi Item',
+        string='Item Description',
         required=True
     )
     quantity = fields.Float(
-        string='Kuantiti',
+        string='Quantity',
         default=1.0
     )
     price_unit = fields.Monetary(
-        string='Harga Satuan',
+        string='Unit Price',
         currency_field='currency_id'
     )
     discount = fields.Float(
-        string='Diskon (%)',
+        string='Discount (%)',
         default=0.0
     )
     price_subtotal = fields.Monetary(

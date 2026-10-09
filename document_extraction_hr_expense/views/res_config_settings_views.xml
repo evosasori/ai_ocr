@@ -8,8 +8,8 @@
             <xpath expr="//block[@name='ai_matching_rules_block']" position="inside">
                 <setting id="default_expense_product_setting" 
                          string="Default Expense Product" 
-                         help="Produk beban standar yang otomatis digunakan jika pengguna tidak memilih produk pada modal ekstraksi struk pengeluaran (hr.expense).">
-                    <field name="default_expense_product_id" options="{'no_create': True}"/>
+                         help="Standard expense product automatically used if the user does not select a product in the expense receipt extraction modal.">
+                    <field name="ai_expense_product_id" options="{'no_create': True}"/>
                 </setting>
             </xpath>
         </field>
