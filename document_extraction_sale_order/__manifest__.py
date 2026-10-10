@@ -30,7 +30,7 @@ AI Document Extraction for Customer Purchase Orders (Odoo 18 & 19)
         'wizard/sale_order_ai_preview_wizard_views.xml',
         'views/sale_order_views.xml',
     ],
-    'images': ['static/description/icon.png'],
+    'images': ['static/description/banner.png'],
     'installable': True,
     'application': False,
     'auto_install': False,
