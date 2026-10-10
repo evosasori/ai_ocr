@@ -18,7 +18,7 @@ AI Document Extraction for Vendor Bills (Odoo 18 / 19)
 - Requires base module: document_extraction_base.
     """,
     'author': "Tyr",
-    'website': "https://github.com/evosasori",
+    'website': "https://github.com/evosasori/ai_ocr",
     'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': [

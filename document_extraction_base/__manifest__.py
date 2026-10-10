@@ -16,7 +16,7 @@ Universal AI Document Extraction Foundation Engine for Odoo 18 & 19
 - One-click Connection & Latency Tester.
     """,
     'author': "Tyr",
-    'website': "https://github.com/evosasori",
+    'website': "https://github.com/evosasori/ai_ocr",
     'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': ['base', 'mail'],

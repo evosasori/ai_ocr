@@ -15,7 +15,7 @@ AI Document Extraction for Employee Expenses (Odoo 18 & 19)
 - Zero-config Cloud Gateway integration or Bring Your Own Key (BYOK) OpenAI-compatible multimodal endpoint.
     """,
     'author': "Tyr",
-    'website': "https://github.com/evosasori",
+    'website': "https://github.com/evosasori/ai_ocr",
     'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': [
