@@ -15,8 +15,9 @@ Universal AI Document Extraction Foundation Engine for Odoo 18 & 19
 - Abstract Mixin (ai.document.extract.mixin) for rapid extension to any Odoo model (Invoices, Receipts, Delivery Orders).
 - One-click Connection & Latency Tester.
     """,
-    'author': 'Antigravity / AI Suite',
-    'website': 'https://github.com/tyr/odoo-ai-document-extraction',
+    'author': "Tyr",
+    'website': "https://github.com/evosasori/odoo-ai-document-extraction",
+    'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': ['base', 'mail'],
     'data': [
