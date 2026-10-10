@@ -14,8 +14,9 @@ AI Document Extraction for Employee Expenses (Odoo 18 & 19)
 - Full Multi-Attachment Support: Multi-page hotel folios or dual receipts (cash receipt + EDC slip) with merge quota tracking.
 - Zero-config Cloud Gateway integration or Bring Your Own Key (BYOK) OpenAI-compatible multimodal endpoint.
     """,
-    'author': 'Antigravity / AI Suite',
-    'website': 'https://github.com/tyr/odoo-ai-document-extraction',
+    'author': "Tyr",
+    'website': "https://github.com/evosasori",
+    'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': [
         'hr_expense',

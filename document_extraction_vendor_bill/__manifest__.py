@@ -17,8 +17,9 @@ AI Document Extraction for Vendor Bills (Odoo 18 / 19)
     * Highlights discrepancy alerts if physical bill total differs from Odoo computed total.
 - Requires base module: document_extraction_base.
     """,
-    'author': 'Antigravity / AI Suite',
-    'website': 'https://github.com/tyr/odoo-ai-document-extraction',
+    'author': "Tyr",
+    'website': "https://github.com/evosasori",
+    'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': [
         'document_extraction_base',

@@ -17,8 +17,9 @@ AI Document Extraction for Customer Purchase Orders (Odoo 18 & 19)
     * Flags discrepancy alert if physical PO total differs from Odoo calculated total.
 - Requires base module: document_extraction_base.
     """,
-    'author': 'Antigravity / AI Suite',
-    'website': 'https://github.com/tyr/odoo-ai-document-extraction',
+    'author': "Tyr",
+    'website': "https://github.com/evosasori",
+    'support': "triadisputra123@gmail.com",
     'license': 'LGPL-3',
     'depends': [
         'document_extraction_base',
