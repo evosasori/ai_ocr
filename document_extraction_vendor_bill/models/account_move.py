@@ -596,15 +596,25 @@ class AccountMove(models.Model):
 
         invoice_lines_commands = [(5, 0, 0)]  # Clear existing draft lines
 
-        # Default expense account fallback if no product is found (Odoo 18 uses company_ids)
+        # Default expense account fallback if no product is found
         fallback_account_id = False
         if self.journal_id and self.journal_id.default_account_id:
             fallback_account_id = self.journal_id.default_account_id.id
         if not fallback_account_id:
-            exp_acc = self.env['account.account'].search([
-                ('company_ids', 'in', self.company_id.id),
-                ('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation')),
-            ], limit=1)
+            AccountAccount = self.env['account.account']
+            if 'account_type' in AccountAccount._fields:
+                domain = [('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation'))]
+                if 'company_ids' in AccountAccount._fields:
+                    domain.append(('company_ids', 'in', self.company_id.id))
+                else:
+                    domain.append(('company_id', '=', self.company_id.id))
+                exp_acc = AccountAccount.search(domain, limit=1)
+            else:
+                # Odoo 14/15 uses user_type_id
+                exp_acc = AccountAccount.search([
+                    ('company_id', '=', self.company_id.id),
+                    ('user_type_id.internal_group', '=', 'expense'),
+                ], limit=1)
             if exp_acc:
                 fallback_account_id = exp_acc.id
 
@@ -633,7 +643,6 @@ class AccountMove(models.Model):
                 _logger.info("Auto-created new product: %s (%s)", desc, code)
 
             line_val = {
-                'display_type': 'product',
                 'name': desc,
                 'quantity': qty,
                 'price_unit': price,
@@ -653,7 +662,6 @@ class AccountMove(models.Model):
             if amt != 0:
                 charge_desc = charge.get('description') or charge.get('type') or 'Fee / Discount'
                 charge_val = {
-                    'display_type': 'product',
                     'name': charge_desc,
                     'quantity': 1.0,
                     'price_unit': amt,

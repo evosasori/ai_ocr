@@ -129,24 +129,45 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
             fallback_account_id = move.journal_id.default_account_id.id
         if not fallback_account_id:
             AccountAccount = self.env['account.account']
-            acc_domain = []
             if 'account_type' in AccountAccount._fields:
-                acc_domain.append(('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation')))
-            elif 'user_type_id' in AccountAccount._fields:
-                acc_domain.append(('user_type_id.internal_group', '=', 'expense'))
-
-            if 'company_ids' in AccountAccount._fields:
-                acc_domain.append(('company_ids', 'in', move.company_id.id))
-            elif 'company_id' in AccountAccount._fields:
-                acc_domain.append(('company_id', '=', move.company_id.id))
-
-            exp_acc = AccountAccount.search(acc_domain, limit=1)
-            if not exp_acc and 'account_type' in AccountAccount._fields:
-                exp_acc = AccountAccount.search([('account_type', 'in', ('expense', 'expense_direct_cost'))], limit=1)
-            if not exp_acc:
-                exp_acc = AccountAccount.search([('code', '=like', '6%')], limit=1) or AccountAccount.search([('code', '=like', '5%')], limit=1)
+                domain = [('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation'))]
+                if 'company_ids' in AccountAccount._fields:
+                    domain.append(('company_ids', 'in', move.company_id.id))
+                else:
+                    domain.append(('company_id', '=', move.company_id.id))
+                exp_acc = AccountAccount.search(domain, limit=1)
+            else:
+                # Odoo 14/15 uses user_type_id
+                exp_acc = AccountAccount.search([
+                    ('company_id', '=', move.company_id.id),
+                    ('user_type_id.internal_group', '=', 'expense'),
+                ], limit=1)
+                if not exp_acc:
+                    exp_acc = AccountAccount.search([
+                        ('user_type_id.internal_group', '=', 'expense'),
+                    ], limit=1)
+                if not exp_acc:
+                    exp_acc = AccountAccount.search([
+                        ('user_type_id.name', 'ilike', 'expense'),
+                    ], limit=1)
+                if not exp_acc:
+                    exp_acc = AccountAccount.search([
+                        ('code', '=like', '6%'),
+                    ], limit=1) or AccountAccount.search([
+                        ('code', '=like', '5%'),
+                    ], limit=1)
             if exp_acc:
                 fallback_account_id = exp_acc.id
+
+        # Verify fallback account exists if any line is without product
+        if not fallback_account_id:
+            for line in self.line_ids:
+                if not line.product_id:
+                    raise UserError(
+                        "Missing Expense Account in Chart of Accounts!\n\n"
+                        "Odoo requires an expense account on each bill line item. "
+                        "Please configure a Chart of Accounts (Invoicing > Configuration > Settings) or assign products to all items."
+                    )
 
         # Replace existing draft lines with verified lines from wizard
         line_commands = [(5, 0, 0)]

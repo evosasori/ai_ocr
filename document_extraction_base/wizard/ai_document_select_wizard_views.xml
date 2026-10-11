@@ -22,28 +22,28 @@
                 </group>
 
                 <!-- Single Mode -->
-                <group invisible="mode != 'single'" string="Select Primary Document">
+                <group attrs="{'invisible': [('mode', '!=', 'single')]}" string="Select Primary Document">
                     <field name="selected_attachment_id" 
                            options="{'no_create': True, 'no_open': True}" 
                            domain="[('id', 'in', available_attachment_ids)]"
-                           required="mode == 'single'"/>
+                           attrs="{'required': [('mode', '=', 'single')]}"/>
                 </group>
 
-                <div class="alert alert-secondary py-2 px-3 small" invisible="mode != 'single'">
+                <div class="alert alert-secondary py-2 px-3 small" attrs="{'invisible': [('mode', '!=', 'single')]}">
                     <i class="fa fa-check-circle me-1 text-success"/>
                     <span>Single Document Mode uses <b>1 quota credit</b>.</span>
                 </div>
 
                 <!-- Merge Mode -->
-                <group invisible="mode != 'merge'" string="Select Documents to Merge">
+                <group attrs="{'invisible': [('mode', '!=', 'merge')]}" string="Select Documents to Merge">
                     <field name="selected_attachment_ids" 
                            widget="many2many_checkboxes" 
                            domain="[('id', 'in', available_attachment_ids)]"
-                           required="mode == 'merge'"/>
+                           attrs="{'required': [('mode', '=', 'merge')]}"/>
                 </group>
 
                 <!-- Quota Alert Banner when Merging -->
-                <div class="alert alert-warning py-3 px-3 mt-3 d-flex align-items-start" invisible="mode != 'merge'">
+                <div class="alert alert-warning py-3 px-3 mt-3 d-flex align-items-start" attrs="{'invisible': [('mode', '!=', 'merge')]}">
                     <i class="fa fa-exclamation-triangle fa-2x me-3 text-warning"/>
                     <div>
                         <strong class="d-block mb-1">⚠️ MULTI-DOCUMENT QUOTA NOTICE:</strong>

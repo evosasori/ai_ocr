@@ -12,12 +12,12 @@
                         type="object"
                         string="⚡ Extract Receipt with AI"
                         class="btn-secondary"
-                        invisible="state not in ('draft', 'reported')"/>
+                        attrs="{'invisible': [('state', 'not in', ('draft', 'reported'))]}"/>
             </xpath>
 
             <!-- Add AI Extraction Audit Information inside sheet -->
             <xpath expr="//sheet" position="inside">
-                <group string="AI Document Extraction Audit" name="ai_extraction_audit" invisible="extraction_status == 'draft'">
+                <group string="AI Document Extraction Audit" name="ai_extraction_audit" attrs="{'invisible': [('extraction_status', '=', 'draft')]}">
                     <group>
                         <field name="extraction_status" widget="badge"/>
                         <field name="ai_model_used"/>

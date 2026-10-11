@@ -13,13 +13,13 @@
                             string="⚡ Extract with AI"
                             type="object"
                             class="btn-primary"
-                            invisible="move_type not in ('in_invoice', 'in_refund') or state != 'draft'"/>
+                            attrs="{'invisible': ['|', ('move_type', 'not in', ('in_invoice', 'in_refund')), ('state', '!=', 'draft')]}"/>
                     <field name="extraction_status"
                            widget="badge"
                            decoration-info="extraction_status == 'processing'"
                            decoration-success="extraction_status == 'extracted'"
                            decoration-danger="extraction_status == 'failed'"
-                           invisible="move_type not in ('in_invoice', 'in_refund')"/>
+                           attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund'))]}"/>
                 </xpath>
 
                 <!-- Discrepancy Alert Banner at top of Sheet -->
@@ -28,22 +28,23 @@
                     <field name="ai_discrepancy_dismissed" invisible="1"/>
                     <div class="alert alert-warning mb-2 py-2 px-3 d-flex align-items-center justify-content-between"
                          role="alert"
-                         invisible="not ai_has_discrepancy or extraction_status != 'extracted' or ai_discrepancy_dismissed">
+                         attrs="{'invisible': ['|', '|', ('ai_has_discrepancy', '=', False), ('extraction_status', '!=', 'extracted'), ('ai_discrepancy_dismissed', '=', True)]}">
                         <div class="d-flex align-items-center">
-                            <i class="fa fa-exclamation-triangle me-2 fs-5 text-warning" title="Discrepancy Warning"/>
+                            <i class="fa fa-exclamation-triangle mr-2 text-warning" title="Discrepancy Warning"/>
                             <div>
                                 <strong>Total Amount Discrepancy Detected!</strong>
-                                <span class="ms-2">
-                                    Physical Document: <field name="ai_detected_total" class="fw-bold" readonly="1" nolabel="1"/>
-                                    | Odoo Total: <field name="amount_total" class="fw-bold" readonly="1" nolabel="1"/>
-                                    | Diff: <field name="ai_total_discrepancy" class="fw-bold text-danger" readonly="1" nolabel="1"/>
+                                <span class="ml-2">
+                                    Physical Document: <field name="ai_detected_total" class="oe_bold" readonly="1" nolabel="1"/>
+                                    | Odoo Total: <field name="amount_total" class="oe_bold" readonly="1" nolabel="1"/>
+                                    | Diff: <field name="ai_total_discrepancy" class="oe_bold text-danger" readonly="1" nolabel="1"/>
                                 </span>
                                 <div class="text-muted small">Please verify taxes, fiscal position, or rounding differences.</div>
                             </div>
                         </div>
                         <button name="action_dismiss_ai_discrepancy"
                                 type="object"
-                                class="btn-close"
+                                class="btn btn-sm btn-outline-secondary"
+                                string="Dismiss"
                                 aria-label="Close"
                                 title="Dismiss Warning"/>
                     </div>
@@ -51,7 +52,7 @@
 
                 <!-- AI Tab in Notebook -->
                 <xpath expr="//notebook" position="inside">
-                    <page string="AI Extraction" name="ai_extraction_page" invisible="move_type not in ('in_invoice', 'in_refund')">
+                    <page string="AI Extraction" name="ai_extraction_page" attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund'))]}">
                         <group>
                             <group string="Detected Document Data">
                                 <field name="ai_detected_vendor_name"/>
@@ -64,14 +65,14 @@
                                 <field name="ai_detected_subtotal"/>
                                 <field name="ai_detected_tax"/>
                                 <field name="ai_detected_total"/>
-                                <field name="ai_total_discrepancy" class="fw-bold"/>
+                                <field name="ai_total_discrepancy" class="oe_bold"/>
                                 <field name="ai_confidence_score"/>
                             </group>
                         </group>
-                        <group string="Error Details" invisible="not extraction_error">
+                        <group string="Error Details" attrs="{'invisible': [('extraction_error', '=', False)]}">
                             <field name="extraction_error" class="text-danger" readonly="1"/>
                         </group>
-                        <group string="Raw JSON Response" invisible="not extracted_raw_json">
+                        <group string="Raw JSON Response" attrs="{'invisible': [('extracted_raw_json', '=', False)]}">
                             <field name="extracted_raw_json" widget="text" readonly="1"/>
                         </group>
                     </page>
