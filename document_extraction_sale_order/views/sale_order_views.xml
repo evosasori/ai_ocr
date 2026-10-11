@@ -18,6 +18,8 @@
 
                 <!-- Discrepancy Alert Banner above sheet -->
                 <xpath expr="//sheet" position="before">
+                    <field name="ai_po_discrepancy" invisible="1"/>
+                    <field name="ai_po_discrepancy_dismissed" invisible="1"/>
                     <div class="alert alert-warning py-2 px-3 mb-2 small d-flex align-items-center justify-content-between"
                          invisible="not ai_po_discrepancy or ai_po_discrepancy_dismissed">
                         <div>
