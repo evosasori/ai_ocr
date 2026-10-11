@@ -23,7 +23,7 @@ AI Document Extraction for Customer Purchase Orders (Odoo 14)
     'license': 'LGPL-3',
     'depends': [
         'document_extraction_base',
-        'sale',
+        'sale_management',
     ],
     'data': [
         'security/ir.model.access.csv',
