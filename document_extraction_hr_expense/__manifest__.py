@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction for Employee Expenses',
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'category': 'Human Resources/Expenses',
     'summary': 'Automated AI Receipt Extraction for Employee Reimbursements and Expenses',
     'description': """
-AI Document Extraction for Employee Expenses (Odoo 14)
+AI Document Extraction for Employee Expenses (Odoo 15)
 ======================================================
 - Automatically parses employee expense receipts, invoices, restaurant bills, fuel tickets, and hotel folios using Vision AI.
 - Smart Receipt Metadata Extraction: Merchant, Transaction Date, Currency, Total Amount, Tax/PPN, and Category suggestion.

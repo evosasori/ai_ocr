@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction Base Engine',
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'category': 'Productivity/AI',
     'summary': 'Universal Multimodal AI Document Extraction Engine for Odoo (Cloud Gateway & BYOK OpenAI-Compatible)',
     'description': """
-Universal AI Document Extraction Foundation Engine for Odoo 14
+Universal AI Document Extraction Foundation Engine for Odoo 15
 ==============================================================
 - Dual Operational Mode:
     1. Odoo AI Cloud Gateway (Default, Zero-Config, automatic trial quota per database UUID).

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction - Vendor Bills',
-    'version': '14.0.1.0.0',
+    'version': '15.0.1.0.0',
     'category': 'Accounting/Accounting',
     'summary': 'Automatic Vendor Bill & Supplier Invoice Extraction into Odoo using Gemini AI Vision',
     'description': """
-AI Document Extraction for Vendor Bills (Odoo 14)
+AI Document Extraction for Vendor Bills (Odoo 15)
 =================================================
 - Automatically extracts Vendor Bills from attached PDFs or scanned invoice images.
 - Uses Gemini Multimodal AI Vision to parse Vendor Details, Bill Number, Invoice & Due Dates, and Line Items.
