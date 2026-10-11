@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction - Sales Orders',
-    'version': '18.0.1.0.0',
+    'version': '14.0.1.0.0',
     'category': 'Sales/Sales',
     'summary': 'Automatic Sales Order Creation from Customer Purchase Orders (PO) using AI Vision',
     'description': """
-AI Document Extraction for Customer Purchase Orders (Odoo 18 & 19)
-=================================================================
+AI Document Extraction for Customer Purchase Orders (Odoo 14)
+=============================================================
 - Automatically extracts Customer Purchase Orders (PO) from attached PDFs or scanned order documents.
 - Preview & Confirmation Wizard before creating real order lines.
 - Smart Customer & Product Reconciliation:

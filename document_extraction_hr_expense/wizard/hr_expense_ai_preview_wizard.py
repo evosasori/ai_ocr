@@ -101,7 +101,6 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
             'product_id': effective_product.id,
             'date': self.date or fields.Date.context_today(self),
             'currency_id': self.currency_id.id,
-            'total_amount_currency': self.total_amount,
             'ai_detected_merchant_name': self.merchant_name,
             'ai_detected_date': self.date,
             'ai_detected_total': self.total_amount,
@@ -111,6 +110,11 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
             'extraction_error': False,
             'extracted_raw_json': self.raw_json_text,
         }
+        if 'total_amount_currency' in expense._fields:
+            vals['total_amount_currency'] = self.total_amount
+        else:
+            vals['unit_amount'] = self.total_amount
+            vals['quantity'] = 1.0
         if self.partner_id:
             vals['vendor_id'] = self.partner_id.id
 

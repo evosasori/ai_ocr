@@ -41,7 +41,7 @@
                     <span><b>Note:</b> Product selection above is <i>optional</i>. If left empty, the system automatically applies the <b>Default Expense Product</b> configured in Settings.</span>
                 </div>
 
-                <notebook invisible="not raw_json_text">
+                <notebook attrs="{'invisible': [('raw_json_text', '=', False)]}">
                     <page string="Raw AI JSON">
                         <field name="raw_json_text" readonly="1" widget="text"/>
                     </page>

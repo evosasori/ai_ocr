@@ -32,14 +32,14 @@
                     <notebook>
                         <page string="Line Items" name="lines_page">
                             <field name="line_ids">
-                                <list editable="bottom">
+                                <tree editable="bottom">
                                     <field name="description"/>
                                     <field name="product_id" options="{'no_create_edit': False}"/>
                                     <field name="quantity"/>
                                     <field name="price_unit"/>
                                     <field name="discount" optional="show"/>
                                     <field name="price_subtotal" sum="Total"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
 

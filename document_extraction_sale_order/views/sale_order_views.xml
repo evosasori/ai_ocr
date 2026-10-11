@@ -13,16 +13,16 @@
                             type="object"
                             string="⚡ Extract Customer PO with AI"
                             class="btn-secondary"
-                            invisible="state not in ('draft', 'sent')"/>
+                            attrs="{'invisible': [('state', 'not in', ('draft', 'sent'))]}"/>
                 </xpath>
 
                 <!-- Discrepancy Alert Banner above sheet -->
                 <xpath expr="//sheet" position="before">
                     <div class="alert alert-warning py-2 px-3 mb-2 small d-flex align-items-center justify-content-between"
-                         invisible="not ai_po_discrepancy or ai_po_discrepancy_dismissed">
+                         attrs="{'invisible': ['|', ('ai_po_discrepancy', '=', 0), ('ai_po_discrepancy_dismissed', '=', True)]}">
                         <div>
                             <strong>⚠️ PO Total Discrepancy Detected:</strong>
-                            <span> Physical PO document total (<field name="ai_detected_total" widget="monetary" class="oe_inline"/>) differs from Odoo calculated total (<field name="amount_total" widget="monetary" class="oe_inline"/>). Discrepancy: <field name="ai_po_discrepancy" widget="monetary" class="oe_inline text-danger fw-bold"/>.</span>
+                            <span> Physical PO document total (<field name="ai_detected_total" widget="monetary" class="oe_inline"/>) differs from Odoo calculated total (<field name="amount_total" widget="monetary" class="oe_inline"/>). Discrepancy: <field name="ai_po_discrepancy" widget="monetary" class="oe_inline text-danger oe_bold"/>.</span>
                         </div>
                         <button name="action_dismiss_ai_po_discrepancy"
                                 type="object"
@@ -44,7 +44,7 @@
                             <field name="ai_detected_po_date"/>
                             <field name="ai_detected_delivery_date"/>
                             <field name="ai_detected_total"/>
-                            <field name="ai_po_discrepancy" invisible="not ai_po_discrepancy"/>
+                            <field name="ai_po_discrepancy" attrs="{'invisible': [('ai_po_discrepancy', '=', 0)]}"/>
                         </group>
                     </group>
                 </xpath>

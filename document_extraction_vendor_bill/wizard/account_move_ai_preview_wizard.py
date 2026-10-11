@@ -114,10 +114,20 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         if move.journal_id and move.journal_id.default_account_id:
             fallback_account_id = move.journal_id.default_account_id.id
         if not fallback_account_id:
-            exp_acc = self.env['account.account'].search([
-                ('company_ids', 'in', move.company_id.id),
-                ('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation')),
-            ], limit=1)
+            AccountAccount = self.env['account.account']
+            if 'account_type' in AccountAccount._fields:
+                domain = [('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation'))]
+                if 'company_ids' in AccountAccount._fields:
+                    domain.append(('company_ids', 'in', move.company_id.id))
+                else:
+                    domain.append(('company_id', '=', move.company_id.id))
+                exp_acc = AccountAccount.search(domain, limit=1)
+            else:
+                # Odoo 14/15 uses user_type_id
+                exp_acc = AccountAccount.search([
+                    ('company_id', '=', move.company_id.id),
+                    ('user_type_id.internal_group', '=', 'expense'),
+                ], limit=1)
             if exp_acc:
                 fallback_account_id = exp_acc.id
 
@@ -125,7 +135,6 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         line_commands = [(5, 0, 0)]
         for line in self.line_ids:
             line_val = {
-                'display_type': 'product',
                 'name': line.description or 'Item',
                 'quantity': line.quantity or 1.0,
                 'price_unit': line.price_unit or 0.0,

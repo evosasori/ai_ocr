@@ -8,61 +8,105 @@
             <field name="inherit_id" ref="base.res_config_settings_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//form" position="inside">
-                    <app data-string="AI Document Extraction" string="AI Document Extraction" name="document_extraction_base">
-                        <block title="AI Engine &amp; Connectivity" name="ai_connectivity_block">
-                            <setting id="ai_connection_mode_setting" string="AI Connection Mode" help="Choose between Odoo AI Cloud Gateway (automatic with free trial quota) or Custom AI Endpoint (BYOK).">
-                                <field name="ai_connection_mode" widget="radio"/>
-                            </setting>
+                    <div class="app_settings_block" data-string="AI Document Extraction" string="AI Document Extraction" data-key="document_extraction_base">
+                        <h2>AI Engine &amp; Connectivity</h2>
+                        <div class="row mt16 o_settings_container" id="ai_connectivity_container">
+                            <div class="col-12 col-lg-6 o_setting_box" id="ai_connection_mode_setting">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">AI Connection Mode</span>
+                                    <div class="text-muted">Choose between Odoo AI Cloud Gateway (automatic with free trial quota) or Custom AI Endpoint (BYOK).</div>
+                                    <div class="content-group mt-2">
+                                        <field name="ai_connection_mode" widget="radio"/>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Cloud Gateway Settings & Quota Monitoring -->
-                            <setting id="cloud_gateway_setting" string="Odoo AI Cloud Gateway" help="Managed cloud service with 50 free extractions included. Quota is tracked automatically based on your Odoo database UUID." invisible="ai_connection_mode != 'cloud'">
-                                <div class="content-group">
-                                    <div class="alert alert-info py-2 px-3 mb-2 small d-flex align-items-center justify-content-between">
-                                        <div>
+                            <div class="col-12 col-lg-6 o_setting_box" id="cloud_gateway_setting" attrs="{'invisible': [('ai_connection_mode', '!=', 'cloud')]}">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Odoo AI Cloud Gateway</span>
+                                    <div class="text-muted">Managed cloud service with 50 free extractions included. Quota is tracked automatically based on your Odoo database UUID.</div>
+                                    <div class="content-group mt-2">
+                                        <div class="alert alert-info py-2 px-3 mb-2 small">
                                             <strong>🟢 Connected to Odoo AI Cloud Gateway</strong><br/>
                                             <span>Licensing &amp; 50-document trial quota active automatically without manual setup.</span>
                                         </div>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2 mt-2">
-                                        <button name="action_check_quota_status" type="object" string="⚡ Check Remaining Quota" class="btn btn-secondary btn-sm"/>
-                                        <button name="action_open_topup_portal" type="object" string="💳 Buy Quota / Top-Up Portal" class="btn btn-success btn-sm"/>
-                                    </div>
-                                    <div class="text-muted small mt-2">
-                                        <span>Gateway Server: </span><code><field name="gateway_url" class="oe_inline" readonly="1"/></code>
+                                        <div class="mt-2">
+                                            <button name="action_check_quota_status" type="object" string="⚡ Check Remaining Quota" class="btn btn-secondary btn-sm mr-2"/>
+                                            <button name="action_open_topup_portal" type="object" string="💳 Buy Quota / Top-Up Portal" class="btn btn-success btn-sm"/>
+                                        </div>
+                                        <div class="text-muted small mt-2">
+                                            <span>Gateway Server: </span><code><field name="gateway_url" class="oe_inline" readonly="1"/></code>
+                                        </div>
                                     </div>
                                 </div>
-                            </setting>
+                            </div>
 
                             <!-- Custom BYOK Settings -->
-                            <setting id="custom_endpoint_setting" string="Custom Base URL" help="OpenAI-compatible API base URL (e.g., https://api.openai.com/v1, https://api.groq.com/openai/v1, or local Ollama)." invisible="ai_connection_mode != 'custom'">
-                                <field name="custom_ai_endpoint" placeholder="https://api.openai.com/v1"/>
-                            </setting>
-
-                            <setting id="custom_api_key_setting" string="Custom API Key" help="API Key Bearer token for your custom endpoint." invisible="ai_connection_mode != 'custom'">
-                                <field name="custom_ai_api_key" password="True" placeholder="sk-..."/>
-                            </setting>
-
-                            <setting id="custom_model_setting" string="Vision AI Model" help="Multimodal vision model code (e.g., gpt-4o-mini, llama-3.2-11b-vision-preview)." invisible="ai_connection_mode != 'custom'">
-                                <field name="custom_ai_model" placeholder="gpt-4o-mini"/>
-                            </setting>
-
-                            <setting id="custom_test_setting" string="Custom AI Diagnostics" help="Test connectivity to your custom AI endpoint." invisible="ai_connection_mode != 'custom'">
-                                <div class="mt-2">
-                                    <button name="action_test_ai_connection" type="object" string="⚡ Test Custom AI Connection" class="btn btn-primary btn-sm"/>
+                            <div class="col-12 col-lg-6 o_setting_box" id="custom_endpoint_setting" attrs="{'invisible': [('ai_connection_mode', '!=', 'custom')]}">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Custom Base URL</span>
+                                    <div class="text-muted">OpenAI-compatible API base URL (e.g., https://api.openai.com/v1, https://api.groq.com/openai/v1, or local Ollama).</div>
+                                    <div class="content-group mt-2">
+                                        <field name="custom_ai_endpoint" placeholder="https://api.openai.com/v1"/>
+                                    </div>
                                 </div>
-                            </setting>
-                        </block>
+                            </div>
 
-                        <block title="Matching &amp; Safe Auto-Creation Rules" name="ai_matching_rules_block">
-                            <setting id="auto_create_partner_setting" string="Auto-Create Contact / Vendor" help="If enabled, automatically creates a new contact/vendor when no match is found via VAT, Email, Phone, or Name.">
-                                <field name="auto_create_partner"/>
-                            </setting>
+                            <div class="col-12 col-lg-6 o_setting_box" id="custom_api_key_setting" attrs="{'invisible': [('ai_connection_mode', '!=', 'custom')]}">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Custom API Key</span>
+                                    <div class="text-muted">API Key Bearer token for your custom endpoint.</div>
+                                    <div class="content-group mt-2">
+                                        <field name="custom_ai_api_key" password="True" placeholder="sk-..."/>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <setting id="auto_create_product_setting" string="Auto-Create Products" help="If enabled, automatically creates a new product when no Barcode or SKU match is found. When disabled, line items are still recorded cleanly in the description.">
-                                <field name="auto_create_product"/>
-                            </setting>
-                        </block>
-                    </app>
+                            <div class="col-12 col-lg-6 o_setting_box" id="custom_model_setting" attrs="{'invisible': [('ai_connection_mode', '!=', 'custom')]}">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Vision AI Model</span>
+                                    <div class="text-muted">Multimodal vision model code (e.g., gpt-4o-mini, llama-3.2-11b-vision-preview).</div>
+                                    <div class="content-group mt-2">
+                                        <field name="custom_ai_model" placeholder="gpt-4o-mini"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" id="custom_test_setting" attrs="{'invisible': [('ai_connection_mode', '!=', 'custom')]}">
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Custom AI Diagnostics</span>
+                                    <div class="text-muted">Test connectivity to your custom AI endpoint.</div>
+                                    <div class="content-group mt-2">
+                                        <button name="action_test_ai_connection" type="object" string="⚡ Test Custom AI Connection" class="btn btn-primary btn-sm"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2>Matching &amp; Safe Auto-Creation Rules</h2>
+                        <div class="row mt16 o_settings_container" id="ai_matching_rules_container">
+                            <div class="col-12 col-lg-6 o_setting_box" id="auto_create_partner_setting">
+                                <div class="o_setting_left_pane">
+                                    <field name="auto_create_partner"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Auto-Create Contact / Vendor</span>
+                                    <div class="text-muted">If enabled, automatically creates a new contact/vendor when no match is found via VAT, Email, Phone, or Name.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-lg-6 o_setting_box" id="auto_create_product_setting">
+                                <div class="o_setting_left_pane">
+                                    <field name="auto_create_product"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Auto-Create Products</span>
+                                    <div class="text-muted">If enabled, automatically creates a new product when no Barcode or SKU match is found. When disabled, line items are still recorded cleanly in the description.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </xpath>
             </field>
         </record>
