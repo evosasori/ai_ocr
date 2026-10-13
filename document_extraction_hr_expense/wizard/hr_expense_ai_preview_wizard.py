@@ -111,8 +111,25 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
             'extraction_error': False,
             'extracted_raw_json': self.raw_json_text,
         }
+        if 'total_amount_currency' in expense._fields:
+            vals['total_amount_currency'] = self.total_amount
+        if 'total_amount' in expense._fields:
+            vals['total_amount'] = self.total_amount
+        if 'unit_amount' in expense._fields:
+            vals['unit_amount'] = self.total_amount or 0.0
+        if 'quantity' in expense._fields:
+            vals['quantity'] = 1.0
+
+        if not expense.tax_ids and effective_product.supplier_taxes_id:
+            tax_ids = effective_product.supplier_taxes_id.filtered(lambda t: t.company_id == expense.company_id)
+            if tax_ids:
+                vals['tax_ids'] = [(6, 0, tax_ids.ids)]
+
         if self.partner_id:
-            vals['vendor_id'] = self.partner_id.id
+            if 'vendor_id' in expense._fields:
+                vals['vendor_id'] = self.partner_id.id
+            elif 'partner_id' in expense._fields:
+                vals['partner_id'] = self.partner_id.id
 
         expense.write(vals)
 
@@ -123,6 +140,7 @@ class HrExpenseAiPreviewWizard(models.TransientModel):
             <h4 style="margin: 0 0 8px 0; color: #1e3a8a;">🧾 AI Receipt Extraction Applied</h4>
             <table style="width: 100%; font-size: 13px;">
                 <tr><td><b>Merchant:</b></td><td>{self.merchant_name or '-'}</td></tr>
+                <tr><td><b>Partner / Contact:</b></td><td>{self.partner_id.display_name if self.partner_id else '-'}</td></tr>
                 <tr><td><b>Date:</b></td><td>{self.date or '-'}</td></tr>
                 <tr><td><b>Total:</b></td><td><b>{self.total_amount:,.2f} {curr_name}</b></td></tr>
                 <tr><td><b>Tax:</b></td><td>{self.tax_amount:,.2f} {curr_name}</td></tr>

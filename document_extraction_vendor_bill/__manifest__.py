@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction - Vendor Bills',
-    'version': '18.0.1.0.0',
+    'version': '19.0.1.0.0',
     'category': 'Accounting/Accounting',
     'summary': 'Automatic Vendor Bill & Supplier Invoice Extraction into Odoo using Gemini AI Vision',
     'description': """

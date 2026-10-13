@@ -98,8 +98,23 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
             'extraction_error': False,
         }
 
-        if self.partner_id:
-            move_vals['partner_id'] = self.partner_id.id
+        # Determine vendor (partner_id)
+        partner = self.partner_id or move.partner_id
+        vendor_str = self.partner_name_raw if hasattr(self, 'partner_name_raw') and self.partner_name_raw else getattr(self, 'vendor_name', False)
+        if not partner and vendor_str:
+            partner = self.env['res.partner'].search([
+                ('name', 'ilike', vendor_str.strip()),
+                '|', ('company_id', '=', False), ('company_id', '=', move.company_id.id)
+            ], limit=1)
+            if not partner:
+                partner = self.env['res.partner'].create({
+                    'name': vendor_str.strip(),
+                    'supplier_rank': 1,
+                    'company_id': move.company_id.id,
+                })
+        if partner:
+            move_vals['partner_id'] = partner.id
+
         if self.currency_id:
             move_vals['currency_id'] = self.currency_id.id
         if self.invoice_date:
@@ -114,10 +129,15 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         if move.journal_id and move.journal_id.default_account_id:
             fallback_account_id = move.journal_id.default_account_id.id
         if not fallback_account_id:
-            exp_acc = self.env['account.account'].search([
-                ('company_ids', 'in', move.company_id.id),
-                ('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation')),
-            ], limit=1)
+            company_field = 'company_ids' if 'company_ids' in self.env['account.account']._fields else 'company_id'
+            account_domain = [
+                (company_field, 'in' if company_field == 'company_ids' else '=', move.company_id.id)
+            ]
+            if 'account_type' in self.env['account.account']._fields:
+                account_domain.append(('account_type', 'in', ('expense', 'expense_direct_cost', 'expense_depreciation')))
+            elif 'user_type_id.type' in self.env['account.account']._fields:
+                account_domain.append(('user_type_id.type', '=', 'other'))
+            exp_acc = self.env['account.account'].search(account_domain, limit=1)
             if exp_acc:
                 fallback_account_id = exp_acc.id
 
@@ -125,7 +145,6 @@ class AccountMoveAiPreviewWizard(models.TransientModel):
         line_commands = [(5, 0, 0)]
         for line in self.line_ids:
             line_val = {
-                'display_type': 'product',
                 'name': line.description or 'Item',
                 'quantity': line.quantity or 1.0,
                 'price_unit': line.price_unit or 0.0,
