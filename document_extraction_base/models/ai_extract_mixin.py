@@ -76,7 +76,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
         valid_attachments = Attachment.browse()
         for att in attachments:
             if att.mimetype in allowed_mimes or (att.name and att.name.lower().endswith(('.pdf', '.png', '.jpg', '.jpeg', '.webp'))):
-                if att.datas:
+                if (hasattr(att, 'raw') and att.raw) or (hasattr(att, 'datas') and att.datas):
                     valid_attachments |= att
 
         return valid_attachments
@@ -91,7 +91,7 @@ class AiDocumentExtractMixin(models.AbstractModel):
 
         if preferred_attachment_id:
             att = Attachment.browse(preferred_attachment_id)
-            if att.exists() and att.datas:
+            if att.exists() and ((hasattr(att, 'raw') and att.raw) or (hasattr(att, 'datas') and att.datas)):
                 return att
 
         atts = self._get_document_attachments()
@@ -123,11 +123,20 @@ class AiDocumentExtractMixin(models.AbstractModel):
         """
         Converts a single attachment (PDF pages or image) into vision-compatible base64 data URLs.
         """
-        datas = attachment.datas
-        if isinstance(datas, bytes):
-            base64_str = datas.decode('utf-8')
+        import base64
+        if hasattr(attachment, 'raw') and attachment.raw:
+            raw_bytes = attachment.raw
+            base64_str = base64.b64encode(raw_bytes).decode('utf-8')
+        elif hasattr(attachment, 'datas') and attachment.datas:
+            datas = attachment.datas
+            if isinstance(datas, bytes):
+                base64_str = datas.decode('utf-8')
+            else:
+                base64_str = str(datas or '')
+            raw_bytes = base64.b64decode(base64_str)
         else:
-            base64_str = str(datas or '')
+            base64_str = ''
+            raw_bytes = b''
 
         mimetype = attachment.mimetype or 'application/pdf'
         if attachment.name:
@@ -145,7 +154,6 @@ class AiDocumentExtractMixin(models.AbstractModel):
         if mimetype == 'application/pdf':
             try:
                 import fitz
-                raw_bytes = base64.b64decode(base64_str)
                 doc = fitz.open(stream=raw_bytes, filetype='pdf')
                 image_urls = []
                 total_pages = min(len(doc), max_pages)
