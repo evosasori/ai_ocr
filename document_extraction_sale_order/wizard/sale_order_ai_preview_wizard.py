@@ -108,27 +108,49 @@ class SaleOrderAiPreviewWizard(models.TransientModel):
 
         # Clear existing draft order lines and replace with verified lines from wizard
         line_commands = [(5, 0, 0)]
+        company = order.company_id or self.env.company
+        Product = self.env['product.product']
+
         for line in self.line_ids:
+            target_product = line.product_id
+
+            if not target_product and line.description:
+                target_product = Product.search([
+                    ('name', '=ilike', line.description.strip()[:64])
+                ], limit=1)
+
+            if not target_product:
+                if company.auto_create_product and line.description:
+                    target_product = Product.create({
+                        'name': line.description.strip(),
+                        'sale_ok': True,
+                        'type': 'consu',
+                        'list_price': line.price_unit or 0.0,
+                    })
+                else:
+                    # Look for any existing saleable product in database
+                    target_product = Product.search([
+                        ('sale_ok', '=', True)
+                    ], limit=1)
+                    if not target_product:
+                        # Fallback: create a general sale product so line is valid in Odoo view
+                        target_product = Product.create({
+                            'name': line.description.strip() or 'Customer PO Item',
+                            'default_code': 'PO_ITEM',
+                            'type': 'consu',
+                            'sale_ok': True,
+                        })
+
             line_val = {
-                'name': line.description or 'Product Item',
+                'name': line.description or (target_product.display_name if target_product else 'Product Item'),
                 'product_uom_qty': line.product_uom_qty or 1.0,
                 'price_unit': line.price_unit or 0.0,
                 'discount': line.discount or 0.0,
             }
-            if line.product_id:
-                line_val['product_id'] = line.product_id.id
-            else:
-                # If product is not linked, Odoo sale.order requires product_id or section/note.
-                # Find a generic service or first consumable product if exists
-                gen_prod = self.env['product.product'].search([
-                    ('sale_ok', '=', True),
-                    ('type', '=', 'consu')
-                ], limit=1)
-                if gen_prod:
-                    line_val['product_id'] = gen_prod.id
+            if target_product:
+                line_val['product_id'] = target_product.id
 
-            if 'product_id' in line_val:
-                line_commands.append((0, 0, line_val))
+            line_commands.append((0, 0, line_val))
 
         if len(line_commands) > 1:
             order_vals['order_line'] = line_commands

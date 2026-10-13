@@ -268,10 +268,10 @@ class SaleOrder(models.Model):
             if not matched_product and desc:
                 matched_product = product_model.search([('name', '=ilike', desc[:64])], limit=1)
 
-            if not matched_product and code and auto_create_product:
+            if not matched_product and desc and auto_create_product:
                 matched_product = product_model.create({
                     'name': desc,
-                    'default_code': code,
+                    'default_code': code or False,
                     'type': 'consu',
                     'sale_ok': True,
                     'purchase_ok': False,
