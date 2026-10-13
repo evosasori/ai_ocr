@@ -255,12 +255,12 @@ class AiDocumentExtractMixin(models.AbstractModel):
         if mode == 'cloud':
             gateway_url = (company.gateway_url or 'https://ai-gateway.triadiputra.my.id').rstrip('/')
             extract_url = f"{gateway_url}/api/v1/extract"
-            db_uuid = self.env['ir.config_parameter'].sudo().get_param('database.uuid') or 'unknown-db'
+            db_uuid = company._get_database_uuid() if hasattr(company, '_get_database_uuid') else (company._get_config_param('database.uuid') if hasattr(company, '_get_config_param') else 'unknown-db')
 
             headers = {
                 'X-Odoo-DB-UUID': db_uuid,
                 'X-Odoo-Company-Name': company.name or 'Odoo Client',
-                'X-Odoo-Base-URL': self.env['ir.config_parameter'].sudo().get_param('web.base.url') or '',
+                'X-Odoo-Base-URL': company._get_config_param('web.base.url') if hasattr(company, '_get_config_param') else '',
                 'X-Odoo-Document-Count': str(doc_count),
                 'Content-Type': 'application/json',
             }
