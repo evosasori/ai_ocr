@@ -23,7 +23,7 @@ AI Document Extraction for Employee Expenses (Odoo 18 & 19)
         'document_extraction_base',
     ],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'wizard/hr_expense_ai_preview_wizard_views.xml',
         'views/hr_expense_views.xml',
         'views/res_config_settings_views.xml',

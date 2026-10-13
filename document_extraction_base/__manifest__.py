@@ -21,7 +21,7 @@ Universal AI Document Extraction Foundation Engine for Odoo 18 & 19
     'license': 'LGPL-3',
     'depends': ['base', 'mail'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'wizard/ai_document_select_wizard_views.xml',
         'views/res_config_settings_views.xml',
         'views/res_company_views.xml',

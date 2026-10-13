@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+access_ai_document_select_wizard,ai.document.select.wizard,ai.document.select.wizard,base.group_user,crud,

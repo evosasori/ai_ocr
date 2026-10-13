@@ -1,0 +1,2 @@
+id,name,model_id,group_id/id,operation,domain
+access_hr_expense_ai_preview_wizard,hr.expense.ai.preview.wizard,hr.expense.ai.preview.wizard,base.group_user,crud,

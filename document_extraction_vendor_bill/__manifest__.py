@@ -26,7 +26,7 @@ AI Document Extraction for Vendor Bills (Odoo 18 / 19)
         'account',
     ],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'wizard/account_move_ai_preview_wizard_views.xml',
         'views/account_move_views.xml',
     ],

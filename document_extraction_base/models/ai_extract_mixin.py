@@ -25,7 +25,6 @@ class AiDocumentExtractMixin(models.AbstractModel):
         string='AI Status',
         default='draft',
         copy=False,
-        tracking=True,
         help='Current status of AI extraction for this document.'
     )
 

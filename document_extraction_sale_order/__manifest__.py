@@ -26,7 +26,7 @@ AI Document Extraction for Customer Purchase Orders (Odoo 18 & 19)
         'sale_management',
     ],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'wizard/sale_order_ai_preview_wizard_views.xml',
         'views/sale_order_views.xml',
     ],
