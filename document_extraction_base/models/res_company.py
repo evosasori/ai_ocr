@@ -73,9 +73,18 @@ class ResCompany(models.Model):
             WHERE gateway_url IS NULL OR gateway_url = '' OR gateway_url LIKE '%9router%';
         """)
 
+    def _get_config_param(self, key, default=''):
+        """Safely retrieve ir.config_parameter across all Odoo versions (14 to 20+)."""
+        ICP = self.env['ir.config_parameter'].sudo()
+        if hasattr(ICP, 'get_param'):
+            return ICP.get_param(key) or default
+        elif hasattr(ICP, 'get_str'):
+            return ICP.get_str(key) or default
+        return default
+
     def _get_database_uuid(self):
         """Retrieve unique database UUID for Cloud Gateway identification."""
-        return self.env['ir.config_parameter'].sudo().get_param('database.uuid') or 'unknown-db-uuid'
+        return self._get_config_param('database.uuid', default='unknown-db-uuid')
 
     def action_check_quota_status(self):
         """Checks live instance quota and subscription plan from Odoo AI Cloud Gateway."""
@@ -87,7 +96,7 @@ class ResCompany(models.Model):
         headers = {
             'X-Odoo-DB-UUID': db_uuid,
             'X-Odoo-Company-Name': self.name,
-            'X-Odoo-Base-URL': self.env['ir.config_parameter'].sudo().get_param('web.base.url') or '',
+            'X-Odoo-Base-URL': self._get_config_param('web.base.url', default=''),
         }
 
         try:
