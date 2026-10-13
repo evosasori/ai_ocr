@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction Base Engine',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Productivity/AI',
     'summary': 'Universal Multimodal AI Document Extraction Engine for Odoo (Cloud Gateway & BYOK OpenAI-Compatible)',
     'description': """

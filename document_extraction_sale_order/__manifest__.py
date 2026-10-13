@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction - Sales Orders',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Sales/Sales',
     'summary': 'Automatic Sales Order Creation from Customer Purchase Orders (PO) using AI Vision',
     'description': """

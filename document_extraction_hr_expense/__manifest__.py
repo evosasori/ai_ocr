@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'AI Document Extraction for Employee Expenses',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Human Resources/Expenses',
     'summary': 'Automated AI Receipt Extraction for Employee Reimbursements and Expenses',
     'description': """
