@@ -125,8 +125,12 @@ class AiDocumentExtractMixin(models.AbstractModel):
         """
         import base64
         if hasattr(attachment, 'raw') and attachment.raw:
-            raw_bytes = attachment.raw
-            base64_str = base64.b64encode(raw_bytes).decode('utf-8')
+            if hasattr(attachment.raw, 'content'):
+                raw_bytes = attachment.raw.content
+                base64_str = attachment.raw.to_base64() if hasattr(attachment.raw, 'to_base64') else base64.b64encode(raw_bytes).decode('utf-8')
+            else:
+                raw_bytes = bytes(attachment.raw)
+                base64_str = base64.b64encode(raw_bytes).decode('utf-8')
         elif hasattr(attachment, 'datas') and attachment.datas:
             datas = attachment.datas
             if isinstance(datas, bytes):
@@ -137,6 +141,9 @@ class AiDocumentExtractMixin(models.AbstractModel):
         else:
             base64_str = ''
             raw_bytes = b''
+
+        if len(raw_bytes) < 32:
+            raise UserError(f"Dokumen lampiran '{attachment.name}' kosong atau rusak (ukuran terlalu kecil). Mohon unggah dokumen PDF atau gambar yang valid.")
 
         mimetype = attachment.mimetype or 'application/pdf'
         if attachment.name:
